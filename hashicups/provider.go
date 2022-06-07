@@ -4,10 +4,10 @@ import (
 	"context"
 	"os"
 
+	"github.com/hashicorp-demoapp/hashicups-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp-demoapp/hashicups-client-go"
 )
 
 var stderr = os.Stderr

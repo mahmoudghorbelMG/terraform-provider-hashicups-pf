@@ -30,8 +30,8 @@ github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.6 h1:BKbKCqvP6I+rmFHt06ZmyQtvB8xAkWdhFyr0ZUNZcxQ=
 github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
-github.com/hashicorp-demoapp/hashicups-client-go v0.0.0-20220214055102-bd8bf734c61c h1:GYXwdLpP+C204jWcLJ5yCEf9Hxu6+BbQ3HacwT/ZFLM=
-github.com/hashicorp-demoapp/hashicups-client-go v0.0.0-20220214055102-bd8bf734c61c/go.mod h1:fJF8CZhWlImByx49t7RZvuoxskStDwqIWi5/GOSJqGI=
+github.com/hashicorp-demoapp/hashicups-client-go v0.0.0-20210721190446-1df90c457bd4 h1:Rt8GW22FYXFLaY9cnfBfPSg9kAngQbagHm31wNoSbBU=
+github.com/hashicorp-demoapp/hashicups-client-go v0.0.0-20210721190446-1df90c457bd4/go.mod h1:fJF8CZhWlImByx49t7RZvuoxskStDwqIWi5/GOSJqGI=
 github.com/hashicorp/go-hclog v0.0.0-20180709165350-ff2cf002a8dd h1:rNuUHR+CvK1IS89MMtcF0EpcVMZtjKfPRp4MEmt/aTs=
 github.com/hashicorp/go-hclog v0.0.0-20180709165350-ff2cf002a8dd/go.mod h1:9bjs9uLqI8l75knNv3lV1kA55veR+WUPSiKIWcQHudI=
 github.com/hashicorp/go-plugin v1.3.0 h1:4d/wJojzvHV1I4i/rrjVaeuyxWrLzDE1mDCyDy8fXS8=

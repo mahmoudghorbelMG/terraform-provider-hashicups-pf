@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/hashicorp-demoapp/hashicups-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp-demoapp/hashicups-client-go"
+	
 )
 
 type resourceOrderType struct{}
