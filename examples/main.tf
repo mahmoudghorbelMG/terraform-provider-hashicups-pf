@@ -28,6 +28,24 @@ resource "hashicups_order" "edu" {
   ]
 }
 
+resource "hashicups_order" "edu2" {
+  items = [{
+    coffee = {
+      id = 5
+    }
+    quantity = 5
+    }, {
+    coffee = {
+      id = 6
+    }
+    quantity = 6
+    }
+  ]
+}
+
 output "edu_order" {
   value = hashicups_order.edu
+}
+output "edu2_order" {
+  value = hashicups_order.edu2
 }
