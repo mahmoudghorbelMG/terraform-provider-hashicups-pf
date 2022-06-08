@@ -1,0 +1,25 @@
+curl -X POST localhost:19090/signup -d '{"username":"education", "password":"test123"}'
+
+export HASHICUPS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTQ1ODUwMzksInVzZXJfaWQiOjEsInVzZXJuYW1lIjoiZWR1Y2F0aW9uIn0.wzcvChKRajWkCIb0tQeOJYLEnCeD4PMpIVv5XKB29IA
+
+curl -X POST -H "Authorization: ${HASHICUPS_TOKEN}" localhost:19090/orders -d '[{"coffee": { "id":1 }, "quantity":4}, {"coffee": { "id":3 }, "quantity":3}]' | jq .
+
+AV_API-FRONT_CL_PROD
+
+resource_mahmoudresource
+
+// WebappBinding -
+type WebappBinding struct {
+	Name					types.String			`tfsdk:"name"`
+	Backend_address_pool    Backend_address_pool 	`tfsdk:"backend_address_pool"`
+	Backend_http_settings   Backend_http_settings	`tfsdk:"backend_http_settings"`
+}
+type Backend_address_pool struct {
+	Name	types.String	`tfsdk:"name"`
+	Fqdns   types.String	`tfsdk:"fqdns"`	
+}
+type Backend_http_settings struct {
+	Name	types.String	`tfsdk:"name"`
+	Fqdns   types.String	`tfsdk:"fqdns"`	
+}
+5.84

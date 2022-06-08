@@ -32,10 +32,18 @@ type Coffee struct {
 	// Ingredients []Ingredient   `tfsdk:"ingredients"`
 }
 
-// Ingredient -
-// type Ingredient struct {
-// 	ID       int    `tfsdk:"ingredient_id"`
-// 	Name     string `tfsdk:"name"`
-// 	Quantity int    `tfsdk:"quantity"`
-// 	Unit     string `tfsdk:"unit"`
-// }
+// WebappBinding -
+type WebappBinding struct {
+	Name					types.String			`tfsdk:"name"`
+	Backend_address_pool    Backend_address_pool 	`tfsdk:"backend_address_pool"`
+	//Backend_http_settings   Backend_http_settings	`tfsdk:"backend_http_settings"`
+}
+type Backend_address_pool struct {
+	Name			types.String	`tfsdk:"name"`
+	Fqdns   		[]types.String	`tfsdk:"fqdns"`	
+	Ip_addresses	[]types.String	`tfsdk:"ip_addresses"`
+}/*
+type Backend_http_settings struct {
+	Name		types.String	`tfsdk:"name"`
+	Protocol	types.String	`tfsdk:"protocol"`	
+}*/
