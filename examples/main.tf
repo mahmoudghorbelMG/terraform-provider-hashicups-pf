@@ -29,7 +29,7 @@ resource "hashicups_webappBinding" "citeo-plus-binding" {
   name = "citeo-plus-binding-resource-name"
   backend_address_pool = {
     name = "default-citeo-plus-be-pool"
-    fqdns = "default-citeo-plus.azurewebsites.net"
+    fqdns = ["default-citeo-plus.azurewebsites.net"]
   }
 
 }
