@@ -25,7 +25,17 @@ resource "hashicups_order" "edu" {
     }
   ]
 }
+resource "hashicups_webappBinding" "citeo-plus-binding" {
+  Name = "citeo-plus-binding-resource-name"
+  backend_address_pool {
+    Name = "default-citeo-plus-be-pool"
+    Fqdns = "default-citeo-plus.azurewebsites.net"
+  }
 
+}
+output "citeo-plus-binding_out" {
+  value = hashicups_webappBinding.citeo-plus-binding
+}
 output "edu_order" {
   value = hashicups_order.edu
 }
