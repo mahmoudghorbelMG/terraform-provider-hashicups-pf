@@ -17,11 +17,11 @@ func main() {
 			Name: "hashicups",
 		})*/
 	/*
-		if runtime.GOOS == "windows" {
-	        fmt.Println("Can't Execute this on a windows machine")
-	    } else {
-	        execute()
-	    }*/
+			if runtime.GOOS == "windows" {
+		        fmt.Println("Can't Execute this on a windows machine")
+		    } else {
+		        execute()
+		    }*/
 	execute()
 }
 
