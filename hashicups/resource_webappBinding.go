@@ -97,8 +97,10 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	fmt.Printf("backend.Name.Value %s\n", backend.Name.Value)
 
 	// Create new order
-	command := ".\\script.ps1 -Backendpool " + backend.Name.Value
-	out, err := exec.Command("powershell.exe", "-NoProfile", command).CombinedOutput()
+	//command := ".\\script.ps1 -Backendpool " + backend.Name.Value
+	//out, err := exec.Command("powershell.exe", "-NoProfile", command).CombinedOutput()
+	comande := "powershell.exe ./script.ps1 -Backendpool " + backend.Name.Value
+	out, err := exec.Command(comande).Output()
 
 	// if there is an error with our execution handle it here
 	if err != nil {
@@ -140,8 +142,10 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 	webappBindingName := state.Name.Value
 
 	// Get order current value
-	command := ".\\script.ps1 -Backendpool " + state.Backend_address_pool.Name.Value
-	out, err := exec.Command("powershell", "-NoProfile", command).CombinedOutput()
+	//command := ".\\script.ps1 -Backendpool " + state.Backend_address_pool.Name.Value
+	//out, err := exec.Command("powershell", "-NoProfile", command).CombinedOutput()
+	comande := "powershell.exe ./script.ps1 -Backendpool " + state.Backend_address_pool.Name.Value
+	out, err := exec.Command(comande).Output()
 
 	// if there is an error with our execution handle it here
 	if err != nil {
