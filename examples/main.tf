@@ -27,7 +27,6 @@ resource "hashicups_order" "edu" {
     }
   ]
 }
-
 resource "hashicups_webappBinding" "citeo-plus-binding" {
   Name = "citeo-plus-binding-resource-name"
   backend_address_pool {

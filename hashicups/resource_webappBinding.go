@@ -97,7 +97,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	fmt.Printf("backend.Name.Value %s\n", backend.Name.Value)
 
 	// Create new order
-	command := ".\\script.ps1 -Backendpool "+backend.Name.Value
+	command := ".\\script.ps1 -Backendpool " + backend.Name.Value
 	out, err := exec.Command("powershell.exe", "-NoProfile", command).CombinedOutput()
 
 	// if there is an error with our execution handle it here
@@ -140,7 +140,7 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 	webappBindingName := state.Name.Value
 
 	// Get order current value
-	command := ".\\script.ps1 -Backendpool "+state.Backend_address_pool.Name.Value
+	command := ".\\script.ps1 -Backendpool " + state.Backend_address_pool.Name.Value
 	out, err := exec.Command("powershell", "-NoProfile", command).CombinedOutput()
 
 	// if there is an error with our execution handle it here
