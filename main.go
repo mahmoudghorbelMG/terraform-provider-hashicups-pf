@@ -33,7 +33,7 @@ func execute() {
 
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}*/
-	fmt.Printf("out %s", out)
+	fmt.Printf("\nout %s", out)
 	// as the out variable defined above is of type []byte we need to convert
 	// this to a string or else we will see garbage printed out in our console
 	// this is how we convert it to a string
