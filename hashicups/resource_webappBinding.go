@@ -117,7 +117,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	var backend_ Backend_address_pool
 	err = json.Unmarshal(out, &backend_)
 	if err != nil {
-		log.Fatalf("json.Unmarshal failed with %s\n", err)
+		log.Fatalf("=======================json.Unmarshal failed with %s\n", err)
 		return
 	}
 	webappBinding_name := plan.Name
