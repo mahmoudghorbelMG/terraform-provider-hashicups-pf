@@ -103,8 +103,8 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	//out, err := exec.Command(comande).Output()
 
 	command := "script.ps1"// -Backendpool default-citeo-plus-be-pool"
-	out, err := exec.Command("pwsh", "-File",command,"-Backendpool",backend.Name.Value).CombinedOutput()
-
+	out, err := exec.Command("pwsh", "-File",command,"-Backendpool",backend.Name.Value).Output()
+	fmt.Printf("##################Executing pwsh script#######################\n")
 
 	//command := "dir"
 	//out, err := exec.Command(command).CombinedOutput()
