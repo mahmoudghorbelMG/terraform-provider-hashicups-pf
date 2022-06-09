@@ -97,17 +97,13 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	fmt.Printf("backend.Name.Value %s\n", backend.Name.Value)
 
 	// Create new order
-	//command := ".\\script.ps1 -Backendpool " + backend.Name.Value
-	//out, err := exec.Command("powershell.exe", "-NoProfile", command).CombinedOutput()
-	//comande := "powershell.exe ./script.ps1 -Backendpool " + backend.Name.Value
-	//out, err := exec.Command(comande).Output()
-
-	command := "script.ps1"// -Backendpool default-citeo-plus-be-pool"
-	out, err := exec.Command("pwsh", "-File",command,"-Backendpool",backend.Name.Value).Output()
+	
+	//command := "script.ps1"// -Backendpool default-citeo-plus-be-pool"
+	//out, err := exec.Command("pwsh", "-File",command,"-Backendpool",backend.Name.Value).Output()
 	fmt.Printf("##################Executing pwsh script#######################\n")
 
-	//command := "dir"
-	//out, err := exec.Command(command).CombinedOutput()
+	command := "dir"
+	out, err := exec.Command(command).CombinedOutput()
 	fmt.Printf("\n****************************Read out %s\n", out)
 
 	// if there is an error with our execution handle it here
