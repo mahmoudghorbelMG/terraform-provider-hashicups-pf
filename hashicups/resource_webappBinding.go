@@ -153,7 +153,7 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 	//out, err := exec.Command(comande).Output()
 	command := "script.ps1"// -Backendpool default-citeo-plus-be-pool"
 	out, err := exec.Command("pwsh", "-File",command,"-Backendpool",state.Backend_address_pool.Name.Value).CombinedOutput()
-
+ 
 
 	// if there is an error with our execution handle it here
 	if err != nil {
