@@ -2,7 +2,15 @@ package hashicups
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
 	"os"
+	"strings"
+	"terraform-provider-hashicups-pf/azureagw"
 
 	"github.com/hashicorp-demoapp/hashicups-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -17,8 +25,9 @@ func New() tfsdk.Provider {
 }
 
 type provider struct {
-	configured bool
-	client     *hashicups.Client
+	configured 	bool
+	client     	*hashicups.Client
+	token 		*azureagw.Token
 }
 
 // GetSchema
@@ -56,7 +65,11 @@ func (p *provider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics)
 				Type:     types.StringType,
 				Optional:  true,
 				Computed:  true,
-				Sensitive: true,
+			},
+			"azure_subscription_id": {
+				Type:     types.StringType,
+				Optional:  true,
+				Computed:  true,
 			},
 		},
 	}, nil
@@ -64,12 +77,13 @@ func (p *provider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics)
 
 // Provider schema struct
 type providerData struct {
-	Username 			types.String `tfsdk:"username"`
-	Host     			types.String `tfsdk:"host"`
-	Password 			types.String `tfsdk:"password"`
-	AZURE_CLIENT_ID 	types.String `tfsdk:"azure_client_id"`
-	AZURE_CLIENT_SECRET types.String `tfsdk:"azure_client_secret"`
-	AZURE_TENANT_ID 	types.String `tfsdk:"azure_tenant_id"`
+	Username 				types.String `tfsdk:"username"`
+	Host     				types.String `tfsdk:"host"`
+	Password 				types.String `tfsdk:"password"`
+	AZURE_CLIENT_ID 		types.String `tfsdk:"azure_client_id"`
+	AZURE_CLIENT_SECRET 	types.String `tfsdk:"azure_client_secret"`
+	AZURE_TENANT_ID 		types.String `tfsdk:"azure_tenant_id"`
+	AZURE_SUBSCRIPTION_ID	types.String `tfsdk:"azure_subscription_id"`
 }
 
 func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderRequest, resp *tfsdk.ConfigureProviderResponse) {
@@ -160,7 +174,7 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	}
 
 	// User must provide a AZURE_CLIENT_ID to the provider
-	var aZURE_CLIENT_ID string
+	var AZURE_CLIENT_ID string
 	if config.AZURE_CLIENT_ID.Unknown {
 		// Cannot connect to client with an unknown value
 		resp.Diagnostics.AddWarning(
@@ -171,12 +185,12 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	}
 
 	if config.AZURE_CLIENT_ID.Null {
-		aZURE_CLIENT_ID = os.Getenv("AZURE_CLIENT_ID")
+		AZURE_CLIENT_ID = os.Getenv("AZURE_CLIENT_ID")
 	} else {
-		aZURE_CLIENT_ID = config.AZURE_CLIENT_ID.Value
+		AZURE_CLIENT_ID = config.AZURE_CLIENT_ID.Value
 	}
 
-	if aZURE_CLIENT_ID == "" {
+	if AZURE_CLIENT_ID == "" {
 		// Error vs warning - empty value must stop execution
 		resp.Diagnostics.AddError(
 			"Unable to find AZURE_CLIENT_ID",
@@ -235,8 +249,40 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 			"AZURE_TENANT_ID cannot be an empty string",
 		)
 		return
+	}	
+
+	// User must provide a AZURE_SUBSCRIPTION_ID to the provider
+	var AZURE_SUBSCRIPTION_ID string
+	if config.AZURE_SUBSCRIPTION_ID.Unknown {
+		// Cannot connect to client with an unknown value
+		resp.Diagnostics.AddWarning(
+			"Unable to create Azure client",
+			"Cannot use unknown value as AZURE_SUBSCRIPTION_ID",
+		)
+		return
 	}
 
+	if config.AZURE_SUBSCRIPTION_ID.Null {
+		AZURE_SUBSCRIPTION_ID = os.Getenv("AZURE_SUBSCRIPTION_ID")
+	} else {
+		AZURE_SUBSCRIPTION_ID = config.AZURE_SUBSCRIPTION_ID.Value
+	}
+
+	if AZURE_SUBSCRIPTION_ID == "" {
+		// Error vs warning - empty value must stop execution
+		resp.Diagnostics.AddError(
+			"Unable to find AZURE_SUBSCRIPTION_ID",
+			"AZURE_SUBSCRIPTION_ID cannot be an empty string",
+		)
+		return
+	}
+
+
+	// create Token 
+	t:=getToken(AZURE_CLIENT_ID,AZURE_CLIENT_SECRET,AZURE_TENANT_ID)
+	p.token = &t
+	fmt.Println("################TOKEN############### : ",p.token.Access_token)
+	
 
 	// Create a new HashiCups client and set it to the provider client
 	c, err := hashicups.NewClient(&host, &username, &password)
@@ -265,4 +311,37 @@ func (p *provider) GetDataSources(_ context.Context) (map[string]tfsdk.DataSourc
 	return map[string]tfsdk.DataSourceType{
 		"hashicups_coffees": dataSourceCoffeesType{},
 	}, nil
+}
+// Get Token to call Azure Rest API 
+func getToken(client_id string,client_secret string,tenant_id string)(azureagw.Token){
+	params := url.Values{}
+	params.Add("grant_type", `client_credentials`)
+	params.Add("client_id", client_id)
+	params.Add("client_secret",client_secret)
+	params.Add("resource", `https://management.azure.com/`)
+	body := strings.NewReader(params.Encode())
+
+	req, err := http.NewRequest("POST", "https://login.microsoftonline.com/"+tenant_id+"/oauth2/token", body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	responseData, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        log.Fatal(err)
+    }
+	
+	var token azureagw.Token
+	err = json.Unmarshal(responseData, &token)
+  
+    if err != nil {  
+        log.Fatal(err)
+    }
+	return token
 }

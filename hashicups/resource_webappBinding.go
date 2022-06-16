@@ -46,21 +46,7 @@ func (r resourceWebappBindingType) GetSchema(_ context.Context) (tfsdk.Schema, d
 						Optional: true,
 					},
 				}),
-			}, /*
-				"backend_http_settings": {
-					Required: true,
-					Attributes: tfsdk.ListNestedAttributes(map[string]tfsdk.Attribute{
-						"name": {
-							Type:     types.StringType,
-							Required: true,
-						},
-						"protocol": {
-							Type:     types.StringType,
-							Required: true,
-						},
-					}, tfsdk.ListNestedAttributesOptions{}
-				),
-				},*/
+			}, 
 		},
 	}, nil
 }
@@ -90,6 +76,16 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		return
 	}
 
+	//Get the agw
+
+	//Verify if the agw already contains the wanted element
+
+	//create the new agw object
+
+	//update agw 
+
+	//state 
+	
 	// Generate API request body from plan
 	var backend Backend_address_pool
 	backend = plan.Backend_address_pool
