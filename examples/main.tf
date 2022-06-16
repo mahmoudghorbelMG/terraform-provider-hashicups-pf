@@ -27,7 +27,7 @@ resource "hashicups_order" "edu" {
 }
 resource "hashicups_webappBinding" "citeo-plus-binding" {
   name = "mahmoud-backendAddressPool-resource-name"
-  agw_Name              = "default-app-gateway-mahmoud"
+  agw_name              = "default-app-gateway-mahmoud"
   agw_rg                = "shared-app-gateway"
   backend_address_pool = {
     name = "mahmoud-backendAddressPool-name"

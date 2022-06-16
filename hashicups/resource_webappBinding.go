@@ -33,6 +33,14 @@ func (r resourceWebappBindingType) GetSchema(_ context.Context) (tfsdk.Schema, d
 						Type:     types.StringType,
 						Required: true,
 					},
+					"agw_name": {
+						Type:     types.StringType,
+						Required: true,
+					},
+					"agw_rg": {
+						Type:     types.StringType,
+						Required: true,
+					},
 					"fqdns": {
 						Type: types.ListType{
 							ElemType: types.StringType,
@@ -85,7 +93,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	//update agw 
 
 	//state 
-	
+
 	// Generate API request body from plan
 	var backend Backend_address_pool
 	backend = plan.Backend_address_pool
