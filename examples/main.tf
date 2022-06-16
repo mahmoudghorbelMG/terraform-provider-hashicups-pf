@@ -26,10 +26,11 @@ resource "hashicups_order" "edu" {
   ]
 }
 resource "hashicups_webappBinding" "citeo-plus-binding" {
-  name = "citeo-plus-binding-resource-name"
+  name = "mahmoud-backendAddressPool-resource-name"
   backend_address_pool = {
-    name = "default-citeo-plus-be-pool"
-    fqdns = ["default-citeo-plus.azurewebsites.net"]
+    name = "mahmoud-backendAddressPool-name"
+    fqdns = ["fqdn.mahmoud"]
+    ip_addresses=["10.2.3.3"]
   }
 
 }
