@@ -41,18 +41,18 @@ func (p *provider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics)
 				Computed:  true,
 				Sensitive: true,
 			},
-			"AZURE_CLIENT_ID": {
+			"azure_client_id": {
 				Type:     types.StringType,
 				Optional: true,
 				Computed: true,
 			},
-			"AZURE_CLIENT_SECRET": {
+			"azure_client_secret": {
 				Type:     types.StringType,
 				Optional:  true,
 				Computed:  true,
 				Sensitive: true,
 			},
-			"AZURE_TENANT_ID": {
+			"azure_tenant_id": {
 				Type:     types.StringType,
 				Optional:  true,
 				Computed:  true,
@@ -67,9 +67,9 @@ type providerData struct {
 	Username 			types.String `tfsdk:"username"`
 	Host     			types.String `tfsdk:"host"`
 	Password 			types.String `tfsdk:"password"`
-	AZURE_CLIENT_ID 	types.String `tfsdk:"AZURE_CLIENT_ID"`
-	AZURE_CLIENT_SECRET types.String `tfsdk:"AZURE_CLIENT_SECRET"`
-	AZURE_TENANT_ID 	types.String `tfsdk:"AZURE_TENANT_ID"`
+	AZURE_CLIENT_ID 	types.String `tfsdk:"azure_client_id"`
+	AZURE_CLIENT_SECRET types.String `tfsdk:"azure_client_secret"`
+	AZURE_TENANT_ID 	types.String `tfsdk:"azure_tenant_id"`
 }
 
 func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderRequest, resp *tfsdk.ConfigureProviderResponse) {
