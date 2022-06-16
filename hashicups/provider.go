@@ -3,7 +3,6 @@ package hashicups
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
