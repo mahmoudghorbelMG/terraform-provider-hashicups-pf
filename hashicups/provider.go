@@ -160,7 +160,7 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	}
 
 	// User must provide a AZURE_CLIENT_ID to the provider
-	var AZURE_CLIENT_ID string
+	var aZURE_CLIENT_ID string
 	if config.AZURE_CLIENT_ID.Unknown {
 		// Cannot connect to client with an unknown value
 		resp.Diagnostics.AddWarning(
@@ -171,12 +171,12 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	}
 
 	if config.AZURE_CLIENT_ID.Null {
-		AZURE_CLIENT_ID = os.Getenv("AZURE_CLIENT_ID")
+		aZURE_CLIENT_ID = os.Getenv("AZURE_CLIENT_ID")
 	} else {
-		AZURE_CLIENT_ID = config.AZURE_CLIENT_ID.Value
+		aZURE_CLIENT_ID = config.AZURE_CLIENT_ID.Value
 	}
 
-	if AZURE_CLIENT_ID == "" {
+	if aZURE_CLIENT_ID == "" {
 		// Error vs warning - empty value must stop execution
 		resp.Diagnostics.AddError(
 			"Unable to find AZURE_CLIENT_ID",
