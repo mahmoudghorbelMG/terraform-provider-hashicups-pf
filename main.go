@@ -2,44 +2,329 @@ package main
 
 import (
 	"context"
+	"bytes"
+	"encoding/json"
 	"fmt"
-	"os/exec"
-	"terraform-provider-hashicups-pf/hashicups"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
+	"os"
+	"terraform-provider-hashicups-pf/azureagw"
+	"strings"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	//"terraform-provider-hashicups-pf/hashicups"
+	"terraform-provider-hashicups-pf/hashicups"
+	
 )
+
 
 func main() {
 	tfsdk.Serve(context.Background(), hashicups.New, tfsdk.ServeOpts{
 		Name: "hashicups",
 	})
-	//execute()
-}
-
-func execute() {
-
-	// here we perform the pwd command.
-	// we can store the output of this in our out variable
-	// and catch any errors in err
-
-	comande := "powershell.exe ./script.ps1 -Backendpool default-citeo-plus-be-pool"
-	out, err := exec.Command(comande).Output()
+/*
+	AZURE_TENANT_ID:="*******************************"
+	AZURE_CLIENT_ID :="*****************************"
+	AZURE_CLIENT_SECRET :="******************************"
+	AZURE_SUBSCRIPTION_ID :="*********************************"
 	
-	//comande := ".\\script.ps1 -Backendpool default-citeo-plus-be-pool"
-	//out, err := exec.Command("powershell", "-NoProfile", comande).CombinedOutput()
-	if err != nil {
-        fmt.Printf("%s", err)
-    }
-	// if there is an error with our execution
-	// handle it here
-	/*if err != nil {
+	resourceGroupName:= "shared-app-gateway"
+	applicationGatewayName := "default-app-gateway-mahmoud"
+	token := getToken(AZURE_CLIENT_ID,AZURE_CLIENT_SECRET,AZURE_TENANT_ID)
+	var gw azureagw.ApplicationGateway
+	gw = getGW(AZURE_SUBSCRIPTION_ID,resourceGroupName,applicationGatewayName,token.Access_token)
+	fmt.Print("##################################",
+				"\nGateway Name =",gw.Name,				
+				"\nGateway Properties GatewayIPConfigurations[0].Name=",gw.Properties.GatewayIPConfigurations[0].Name,
+				"\nGateway Name =",gw.Properties.SslCertificates[0].Name,
+				"\nGateway Name =",gw.Properties.BackendHTTPSettingsCollection[0].Name,
+				"\nGateway Name =",gw.Properties.BackendAddressPools[2].Name,"\n")
 
-		log.Fatalf("cmd.Run() failed with %s\n", err)
-	}*/
-	fmt.Printf("\nout %s", out)
-	// as the out variable defined above is of type []byte we need to convert
-	// this to a string or else we will see garbage printed out in our console
-	// this is how we convert it to a string
 
+	
+	// create a new backendAddressPool 
+	mahmoud := azureagw.BackendAddressPools{
+		Name: "mahmoud-backendAddressPool-name",
+		//ID:   "qlsdjflqsdjfqsd",
+		//Etag: "Etag-string",
+		Properties: struct {
+			ProvisioningState string "json:\"provisioningState,omitempty\""
+			BackendAddresses  []struct {
+				Fqdn      string "json:\"fqdn,omitempty\""
+				IPAddress string "json:\"ipAddress,omitempty\""
+			} "json:\"backendAddresses\""
+			RequestRoutingRules []struct {
+				ID string "json:\"id\""
+			} "json:\"requestRoutingRules,omitempty\""
+		}{},
+		Type: "Microsoft.Network/applicationGateways/backendAddressPools",
+	}
+	
+	//fmt.Printf("\nGateway Identity = %+v\n",mahmoud)
+	//mahmoud.Properties.BackendAddresses = make([]struct{Fqdn string "json:\"fqdn,omitempty\""; IPAddress string "json:\"ipAddress,omitempty\""}, 2)
+	mahmoud.Properties.BackendAddresses = make([]struct{Fqdn string "json:\"fqdn,omitempty\""; IPAddress string "json:\"ipAddress,omitempty\""}, 2)
+	
+	mahmoud.Properties.BackendAddresses[0].Fqdn ="fqdn.mahmoud"
+	mahmoud.Properties.BackendAddresses[1].IPAddress = "10.2.3.3"
+	
+	//add the newly created backendAddressPool to the gateway
+	//gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, mahmoud)
+	//updateGW(AZURE_SUBSCRIPTION_ID,resourceGroupName,applicationGatewayName,gw,token.Access_token)	
+	
+	//"name": "mahmoud-backendAddressPool-name"
+	removeBackendAddressPoolElement(&gw,"mahmoud-backendAddressPool-name")
+	//printGWtoFile(gw,"gw-removed.json")
+	updateGW(AZURE_SUBSCRIPTION_ID,resourceGroupName,applicationGatewayName,gw,token.Access_token)
+*/
 }
+func removeBackendAddressPoolElement(gw *azureagw.ApplicationGateway,backendAddressPoolName string ){
+	removed := false
+	for i := len(gw.Properties.BackendAddressPools) - 1; i >= 0; i-- { 
+		if gw.Properties.BackendAddressPools[i].Name == backendAddressPoolName { 
+			gw.Properties.BackendAddressPools =append(gw.Properties.BackendAddressPools[:i], gw.Properties.BackendAddressPools[i+1:]...) 
+			removed=true
+		}
+	}	
+	fmt.Println("#############################removed =",removed)
+}
+
+func updateGW(subscriptionId string,resourceGroupName string,applicationGatewayName string,gw azureagw.ApplicationGateway, token string){
+	requestURI := "https://management.azure.com/subscriptions/"+subscriptionId+"/resourceGroups/"+ 
+	resourceGroupName+"/providers/Microsoft.Network/applicationGateways/"+applicationGatewayName+"?api-version=2021-08-01"
+	payloadBytes, err := json.Marshal(gw)
+	if err != nil {
+		// handle err
+	}
+
+////////print json gw
+	//rs := string(payloadBytes)
+	//ress, err := PrettyString(rs)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("agw_before.json||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
+	//printToFile(ress,"agw_before.json")
+	fmt.Println("agw_before.json||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
+	
+////////////
+
+	body := bytes.NewReader(payloadBytes)
+
+	req, err := http.NewRequest("PUT", requestURI, body)
+	if err != nil {
+		// handle err
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+	
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("Call failure: %+v", err)
+	}
+	defer resp.Body.Close()
+	//responseData, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        log.Fatal(err)
+    }
+	
+	//responseString := string(responseData)
+    //res, err := PrettyString(responseString)
+    if err != nil {
+        log.Fatal(err)
+    }
+    //printToFile(res,"agw_after.json")
+	return 
+}
+/*
+func monMain(){
+	//AZURE_TENANT_ID :="*****************************"
+	//AZURE_CLIENT_ID :="**********************"
+	//AZURE_CLIENT_SECRET :="**************************************"
+	AZURE_SUBSCRIPTION_ID :="*********************************"
+	//AZURE_SUBSCRIPTION_ID :="***********************************"
+	resourceGroupName:= "shared-app-gateway"
+	applicationGatewayName := "default-app-gateway-mahmoud"
+	//applicationGatewayName := "dev-app-gateway"
+	//token := getToken()
+	//fmt.Printf("###################################\n%s\n",token.Access_token)
+	var gw azureagw.ApplicationGateway
+	gw = getGW(AZURE_SUBSCRIPTION_ID,resourceGroupName,applicationGatewayName,token.Access_token)
+	
+	var ide azureagw.Identity
+	ide = gw.Identity
+	//printToFile(gw,"agw.txt")
+	fmt.Printf("\nGateway Identity = %+v",ide)//.UserAssignedIdentities,
+	fmt.Print("##################################",
+				"\nGateway Name =",gw.Name,				
+				"\nGateway Properties GatewayIPConfigurations[0].Name=",gw.Properties.GatewayIPConfigurations[0].Name,
+				"\nGateway Name =",gw.Properties.SslCertificates[0].Name,
+				"\nGateway Name =",gw.Properties.BackendHTTPSettingsCollection[0].Name,
+				"\nGateway Name =",gw.Properties.BackendAddressPools[2].Name,"\n")
+}*/
+func printGWtoFile(gw azureagw.ApplicationGateway, fileName string){
+	payloadBytes, err := json.Marshal(gw)
+	if err != nil {
+		// handle err
+	}
+
+	////////print json gw
+	rs := string(payloadBytes)
+	//fmt.Printf(responseString)
+	ress, err := PrettyString(rs)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//fmt.Println("agw_before.json||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
+	printToFile(ress,fileName)
+}
+func printToFile(str string, fileName string){
+	file, err := os.Create(fileName)
+    if err != nil {
+        log.Fatal(err)
+    }
+    mw := io.MultiWriter(os.Stdout, file)
+    fmt.Fprintln(mw, str)
+}
+func getGW(subscriptionId string,resourceGroupName string,applicationGatewayName string, token string)(azureagw.ApplicationGateway){
+	requestURI := "https://management.azure.com/subscriptions/"+subscriptionId+"/resourceGroups/"+ 
+	resourceGroupName+"/providers/Microsoft.Network/applicationGateways/"+applicationGatewayName+"?api-version=2021-08-01"
+	req, err := http.NewRequest("GET", requestURI, nil)
+	if err != nil {
+		// handle err
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("Call failure: %+v", err)
+	}
+	defer resp.Body.Close()
+	responseData, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        log.Fatal(err)
+    }
+	/*
+	responseString := string(responseData)
+    fmt.Printf(responseString)
+
+	
+	res, err := PrettyString(responseString)
+    if err != nil {
+        log.Fatal(err)
+    }*/
+    //fmt.Println(res)
+	var agw azureagw.ApplicationGateway
+	err = json.Unmarshal(responseData, &agw)
+  
+    if err != nil {  
+        fmt.Println(err)
+    }
+	
+	return agw
+}
+func PrettyString(str string) (string, error) {
+    var prettyJSON bytes.Buffer
+    if err := json.Indent(&prettyJSON, []byte(str), "", "    "); err != nil {
+        return "", err
+    }
+    return prettyJSON.String(), nil
+}
+func getToken(client_id string,client_secret string,tenant_id string)(azureagw.Token){
+	params := url.Values{}
+	params.Add("grant_type", `client_credentials`)
+	params.Add("client_id", client_id)
+	params.Add("client_secret",client_secret)
+	params.Add("resource", `https://management.azure.com/`)
+	body := strings.NewReader(params.Encode())
+
+	req, err := http.NewRequest("POST", "https://login.microsoftonline.com/"+tenant_id+"/oauth2/token", body)
+	if err != nil {
+		// handle err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		// handle err
+	}
+	defer resp.Body.Close()
+	responseData, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        log.Fatal(err)
+    }
+	/*
+    responseString := string(responseData)
+    //fmt.Printf(responseString)
+
+	res, err := PrettyString(responseString)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(res)*/
+
+	var token azureagw.Token
+	err = json.Unmarshal(responseData, &token)
+  
+    if err != nil {  
+        fmt.Println(err)
+    }
+	//fmt.Print("#########\ntoken.Token_type: ",token.Token_type,"\ntoken.Expires_in: ",token.Expires_in,"\ntoken.Ext_expires_in: ",token.Ext_expires_in,"\ntoken.Expires_on: ",token.Expires_on,"\ntoken.Not_before: ",token.Not_before,"\ntoken.Resource: ",token.Resource,"\n")
+	return token
+}
+func restCall(token string){
+	//token := os.Getenv("TOKEN")
+		
+	//fmt.Printf("Token = %s",token)
+
+	// curl -X GET https://management.azure.com/subscriptions/*******************/resourcegroups?api-version=2020-09-01 -H "Authorization: Bearer {LONG_STRING_HERE}" -H "Content-type: application/json"
+	requestURI := "https://management.azure.com/subscriptions/*******************/resourcegroups?api-version=2020-09-01"
+	req, err := http.NewRequest("GET", requestURI, nil)
+	if err != nil {
+		// handle err
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("Call failure: %+v", err)
+	}
+	defer resp.Body.Close()
+	responseData, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    responseString := string(responseData)
+    //fmt.Printf(responseString)
+
+	res, err := PrettyString(responseString)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(res)
+}
+func connect() {
+	cred, err := azidentity.NewDefaultAzureCredential(nil)
+	if err != nil {
+	  log.Fatalf("Authentication failure: %+v", err)
+	}
+  
+	//subscriptionId := "b3ae2f08-8ccb-4640-949e-b4c0d2acfde6"
+	// Azure SDK Azure Resource Management clients accept the credential as a parameter
+	//client := armresources.NewClient(subscriptionId, cred, nil)
+	fmt.Printf("Obtained token :%s\n",cred)
+	
+
+	byteArray, err := json.Marshal(cred)
+    if err != nil {
+        log.Fatal(err)
+    }
+	fmt.Println(string(byteArray))
+}
+

@@ -41,15 +41,35 @@ func (p *provider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics)
 				Computed:  true,
 				Sensitive: true,
 			},
+			"AZURE_CLIENT_ID": {
+				Type:     types.StringType,
+				Optional: true,
+				Computed: true,
+			},
+			"AZURE_CLIENT_SECRET": {
+				Type:     types.StringType,
+				Optional:  true,
+				Computed:  true,
+				Sensitive: true,
+			},
+			"AZURE_TENANT_ID": {
+				Type:     types.StringType,
+				Optional:  true,
+				Computed:  true,
+				Sensitive: true,
+			},
 		},
 	}, nil
 }
 
 // Provider schema struct
 type providerData struct {
-	Username types.String `tfsdk:"username"`
-	Host     types.String `tfsdk:"host"`
-	Password types.String `tfsdk:"password"`
+	Username 			types.String `tfsdk:"username"`
+	Host     			types.String `tfsdk:"host"`
+	Password 			types.String `tfsdk:"password"`
+	AZURE_CLIENT_ID 	types.String `tfsdk:"AZURE_CLIENT_ID"`
+	AZURE_CLIENT_SECRET types.String `tfsdk:"AZURE_CLIENT_SECRET"`
+	AZURE_TENANT_ID 	types.String `tfsdk:"AZURE_TENANT_ID"`
 }
 
 func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderRequest, resp *tfsdk.ConfigureProviderResponse) {
@@ -138,6 +158,85 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 		)
 		return
 	}
+
+	// User must provide a AZURE_CLIENT_ID to the provider
+	var AZURE_CLIENT_ID string
+	if config.AZURE_CLIENT_ID.Unknown {
+		// Cannot connect to client with an unknown value
+		resp.Diagnostics.AddWarning(
+			"Unable to create Azure client",
+			"Cannot use unknown value as AZURE_CLIENT_ID",
+		)
+		return
+	}
+
+	if config.AZURE_CLIENT_ID.Null {
+		AZURE_CLIENT_ID = os.Getenv("AZURE_CLIENT_ID")
+	} else {
+		AZURE_CLIENT_ID = config.AZURE_CLIENT_ID.Value
+	}
+
+	if AZURE_CLIENT_ID == "" {
+		// Error vs warning - empty value must stop execution
+		resp.Diagnostics.AddError(
+			"Unable to find AZURE_CLIENT_ID",
+			"AZURE_CLIENT_ID cannot be an empty string",
+		)
+		return
+	}
+
+	// User must provide a AZURE_CLIENT_SECRET to the provider
+	var AZURE_CLIENT_SECRET string
+	if config.AZURE_CLIENT_SECRET.Unknown {
+		// Cannot connect to client with an unknown value
+		resp.Diagnostics.AddWarning(
+			"Unable to create Azure client",
+			"Cannot use unknown value as AZURE_CLIENT_SECRET",
+		)
+		return
+	}
+
+	if config.AZURE_CLIENT_SECRET.Null {
+		AZURE_CLIENT_SECRET = os.Getenv("AZURE_CLIENT_SECRET")
+	} else {
+		AZURE_CLIENT_SECRET = config.AZURE_CLIENT_SECRET.Value
+	}
+
+	if AZURE_CLIENT_SECRET == "" {
+		// Error vs warning - empty value must stop execution
+		resp.Diagnostics.AddError(
+			"Unable to find AZURE_CLIENT_SECRET",
+			"AZURE_CLIENT_SECRET cannot be an empty string",
+		)
+		return
+	}
+
+	// User must provide a AZURE_TENANT_ID to the provider
+	var AZURE_TENANT_ID string
+	if config.AZURE_TENANT_ID.Unknown {
+		// Cannot connect to client with an unknown value
+		resp.Diagnostics.AddWarning(
+			"Unable to create Azure client",
+			"Cannot use unknown value as AZURE_TENANT_ID",
+		)
+		return
+	}
+
+	if config.AZURE_TENANT_ID.Null {
+		AZURE_TENANT_ID = os.Getenv("AZURE_TENANT_ID")
+	} else {
+		AZURE_TENANT_ID = config.AZURE_TENANT_ID.Value
+	}
+
+	if AZURE_TENANT_ID == "" {
+		// Error vs warning - empty value must stop execution
+		resp.Diagnostics.AddError(
+			"Unable to find AZURE_TENANT_ID",
+			"AZURE_TENANT_ID cannot be an empty string",
+		)
+		return
+	}
+
 
 	// Create a new HashiCups client and set it to the provider client
 	c, err := hashicups.NewClient(&host, &username, &password)
