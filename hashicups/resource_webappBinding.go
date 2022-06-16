@@ -26,18 +26,18 @@ func (r resourceWebappBindingType) GetSchema(_ context.Context) (tfsdk.Schema, d
 				Type:     types.StringType,
 				Required: true,
 			},
+			"agw_name": {
+				Type:     types.StringType,
+				Required: true,
+			},
+			"agw_rg": {
+				Type:     types.StringType,
+				Required: true,
+			},			
 			"backend_address_pool": {
 				Required: true,
 				Attributes: tfsdk.SingleNestedAttributes(map[string]tfsdk.Attribute{
 					"name": {
-						Type:     types.StringType,
-						Required: true,
-					},
-					"agw_name": {
-						Type:     types.StringType,
-						Required: true,
-					},
-					"agw_rg": {
 						Type:     types.StringType,
 						Required: true,
 					},
