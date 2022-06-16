@@ -281,7 +281,7 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	// create Token 
 	t:=getToken(AZURE_CLIENT_ID,AZURE_CLIENT_SECRET,AZURE_TENANT_ID)
 	p.token = &t
-	fmt.Println("################TOKEN############### : ",p.token.Access_token)
+	fmt.Println("################TOKEN############### : ")//,p.token.Access_token)
 	
 
 	// Create a new HashiCups client and set it to the provider client
