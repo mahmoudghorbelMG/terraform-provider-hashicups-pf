@@ -14,7 +14,6 @@ import (
 	"terraform-provider-hashicups-pf/azureagw"
 	"strings"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"terraform-provider-hashicups-pf/hashicups"
 	
@@ -309,22 +308,3 @@ func restCall(token string){
     }
     fmt.Println(res)
 }
-func connect() {
-	cred, err := azidentity.NewDefaultAzureCredential(nil)
-	if err != nil {
-	  log.Fatalf("Authentication failure: %+v", err)
-	}
-  
-	//subscriptionId := "b3ae2f08-8ccb-4640-949e-b4c0d2acfde6"
-	// Azure SDK Azure Resource Management clients accept the credential as a parameter
-	//client := armresources.NewClient(subscriptionId, cred, nil)
-	fmt.Printf("Obtained token :%s\n",cred)
-	
-
-	byteArray, err := json.Marshal(cred)
-    if err != nil {
-        log.Fatal(err)
-    }
-	fmt.Println(string(byteArray))
-}
-
