@@ -139,7 +139,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	if !checkBackendAddressPoolElement(gw_response,backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
-			"Unable to create Backend Address pool",
+			"Unable to create Backend Address pool ######## backend_json.Name = "+backend_json.Name,
 			"Backend Address pool Name doesn't exist in the response app gateway",
 		)
 		return

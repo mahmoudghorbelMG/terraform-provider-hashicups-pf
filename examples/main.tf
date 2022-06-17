@@ -6,11 +6,11 @@ terraform {
   }
 }
 provider "hashicups" {
-  username = "education"
+/*  username = "education"
   password = "test123"
-  host     = "http://localhost:19090"
+  host     = "http://localhost:19090"*/
 }
-
+/*
 resource "hashicups_order" "edu" {
   items = [{
     coffee = {
@@ -24,7 +24,7 @@ resource "hashicups_order" "edu" {
     quantity = 2
     }
   ]
-}
+}*/
 resource "hashicups_webappBinding" "citeo-plus-binding" {
   name = "mahmoud-backendAddressPool-resource-name"
   agw_name              = "default-app-gateway-mahmoud"
@@ -36,9 +36,10 @@ resource "hashicups_webappBinding" "citeo-plus-binding" {
   }
 
 }
+/*
 output "citeo-plus-binding_out" {
   value = hashicups_webappBinding.citeo-plus-binding
 }
 output "edu_order" {
   value = hashicups_order.edu
-}
+}*/
