@@ -283,7 +283,7 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	t:=getToken(AZURE_CLIENT_ID,AZURE_CLIENT_SECRET,AZURE_TENANT_ID)
 	p.token = &t
 	p.configureData = &config
-	resp.Diagnostics.AddWarning("################AZURE_SUBSCRIPTION_ID############### : ",p.configureData.AZURE_SUBSCRIPTION_ID.Value)
+	resp.Diagnostics.AddWarning("################AZURE_TENANT_ID############### : ",p.configureData.AZURE_TENANT_ID.Value)
 
 /*
 	// Create a new HashiCups client and set it to the provider client
