@@ -203,20 +203,11 @@ func getGW(subscriptionId string,resourceGroupName string,applicationGatewayName
 		log.Fatalf("Call failure: %+v", err)
 	}
 	defer resp.Body.Close()
+
 	responseData, err := ioutil.ReadAll(resp.Body)
     if err != nil {
         log.Fatal(err)
     }
-	/*
-	responseString := string(responseData)
-    fmt.Printf(responseString)
-
-	
-	res, err := PrettyString(responseString)
-    if err != nil {
-        log.Fatal(err)
-    }*/
-    //fmt.Println(res)
 	var agw azureagw.ApplicationGateway
 	err = json.Unmarshal(responseData, &agw)
   

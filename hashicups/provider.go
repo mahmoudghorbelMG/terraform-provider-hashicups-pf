@@ -25,14 +25,15 @@ func New() tfsdk.Provider {
 
 type provider struct {
 	configured 	bool
-	client     	*hashicups.Client
-	token 		*azureagw.Token
+	client     		*hashicups.Client
+	token 			*azureagw.Token
+	configureData	*providerData
 }
 
 // GetSchema
 func (p *provider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics) {
 	return tfsdk.Schema{
-		Attributes: map[string]tfsdk.Attribute{
+		Attributes: map[string]tfsdk.Attribute{/*
 			"host": {
 				Type:     types.StringType,
 				Optional: true,
@@ -48,7 +49,7 @@ func (p *provider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics)
 				Optional:  true,
 				Computed:  true,
 				Sensitive: true,
-			},
+			},*/
 			"azure_client_id": {
 				Type:     types.StringType,
 				Optional: true,
@@ -75,10 +76,10 @@ func (p *provider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics)
 }
 
 // Provider schema struct
-type providerData struct {
+type providerData struct {/*
 	Username 				types.String `tfsdk:"username"`
 	Host     				types.String `tfsdk:"host"`
-	Password 				types.String `tfsdk:"password"`
+	Password 				types.String `tfsdk:"password"`*/
 	AZURE_CLIENT_ID 		types.String `tfsdk:"azure_client_id"`
 	AZURE_CLIENT_SECRET 	types.String `tfsdk:"azure_client_secret"`
 	AZURE_TENANT_ID 		types.String `tfsdk:"azure_tenant_id"`
@@ -93,7 +94,7 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
+	/*
 	// User must provide a user to the provider
 	var username string
 	if config.Username.Unknown {
@@ -171,6 +172,7 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 		)
 		return
 	}
+	*/
 
 	// User must provide a AZURE_CLIENT_ID to the provider
 	var AZURE_CLIENT_ID string
@@ -280,8 +282,10 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 	// create Token 
 	t:=getToken(AZURE_CLIENT_ID,AZURE_CLIENT_SECRET,AZURE_TENANT_ID)
 	p.token = &t
-	resp.Diagnostics.AddWarning("################TOKEN############### : ",p.token.Access_token)
+	p.configureData = &config
+	//resp.Diagnostics.AddWarning("################TOKEN############### : ",p.token.Access_token)
 
+/*
 	// Create a new HashiCups client and set it to the provider client
 	c, err := hashicups.NewClient(&host, &username, &password)
 	if err != nil {
@@ -292,7 +296,7 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 		return
 	}
 
-	p.client = c
+	p.client = c*/
 	p.configured = true
 }
 
@@ -330,14 +334,15 @@ func getToken(client_id string,client_secret string,tenant_id string)(azureagw.T
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
+
+	// Read and put the json response in byte format
 	responseData, err := ioutil.ReadAll(resp.Body)
     if err != nil {
         log.Fatal(err)
     }
-	
+	// unmarshal the json format response to a token struct
 	var token azureagw.Token
 	err = json.Unmarshal(responseData, &token)
-  
     if err != nil {  
         log.Fatal(err)
     }

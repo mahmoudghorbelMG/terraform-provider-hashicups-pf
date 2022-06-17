@@ -69,6 +69,7 @@ type WebappBinding struct {
 }
 type Backend_address_pool struct {
 	Name         types.String   `tfsdk:"name"`
+	Id 			 types.String	`tfsdk:"id"`
 	Fqdns        []types.String `tfsdk:"fqdns"`
 	Ip_addresses []types.String `tfsdk:"ip_addresses"`
 } /*
