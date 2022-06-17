@@ -166,6 +166,8 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	// log the added backend address pool
 	i := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
 	tflog.Trace(ctx, "created BackendAddressPool", "BackendAddressPool ID", gw_response.Properties.BackendAddressPools[i].ID)
+	var backend_response Backend_address_pool
+	/*
 	var fqdn []types.String
 	fqdn[0] = types.String{Value:gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
 	var ip_addresses []types.String
