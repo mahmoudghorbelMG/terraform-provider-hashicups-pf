@@ -96,7 +96,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	//Get the agw
 	resourceGroupName := plan.Agw_rg.Value
 	applicationGatewayName := plan.Agw_name.Value
-	gw := getGW(r.p.configureData.AZURE_SUBSCRIPTION_ID.Value, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
+	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
 
 	//Verify if the agw already contains the wanted element
 	var backend_plan Backend_address_pool
@@ -136,7 +136,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 
 	// add the backend to the agw and update the agw
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
-	gw_response, responseData := updateGW(r.p.configureData.AZURE_SUBSCRIPTION_ID.Value, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+	gw_response, responseData := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
@@ -144,18 +144,18 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		log.Fatal(err)
 	}
 
-	args := "\nAZURE_SUBSCRIPTION_ID = " + r.p.configureData.AZURE_SUBSCRIPTION_ID.Value +
+	args := "\nAZURE_SUBSCRIPTION_ID = " + r.p.AZURE_SUBSCRIPTION_ID +
 		"\nresourceGroupName = " + resourceGroupName +
 		"\napplicationGatewayName = " + applicationGatewayName +
 		"\nAccess_token = " + r.p.token.Access_token
 	//tranform the gw json to readible pretty string
-	ress_gw := PrettyStringGW(gw_response)
+	//ress_gw := PrettyStringGW(gw_response)
 
 	//verify if the backend address pool is added to the gateway
 	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
-			"Unable to create Backend Address pool ######## API response = "+args+"\n"+ress_gw+"\n"+ress_error,
+			"Unable to create Backend Address pool ######## API response = "+args+"\n"+ress_error, //+ress_gw+"\n"  
 			"Backend Address pool Name doesn't exist in the response app gateway",
 		)
 		return
