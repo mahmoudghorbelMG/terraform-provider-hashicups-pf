@@ -166,14 +166,24 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	// log the added backend address pool
 	i := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
 	tflog.Trace(ctx, "created BackendAddressPool", "BackendAddressPool ID", gw_response.Properties.BackendAddressPools[i].ID)
-
+	var fqdn []types.String
+	fqdn[0] = types.String{Value:gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
+	var ip_addresses []types.String
+	ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
 	// Map response body to resource schema attribute
-	var backend_response Backend_address_pool
+	var backend_response = Backend_address_pool{
+		Name:         types.String{Value: gw_response.Properties.BackendAddressPools[i].Name},
+		Id:           types.String{Value: gw_response.Properties.BackendAddressPools[i].ID},
+		Fqdns:        fqdn,
+		Ip_addresses: ip_addresses,
+	}
+
+	/*
 	backend_response.Name = types.String{Value: gw_response.Properties.BackendAddressPools[i].Name}
 	backend_response.Id = types.String{Value: gw_response.Properties.BackendAddressPools[i].ID}
-	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].Fqdn}
-	backend_response.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].IPAddress}
-
+	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
+	backend_response.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+*/
 	//and
 	// Generate resource state struct
 	var result = WebappBinding{
