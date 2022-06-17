@@ -172,8 +172,8 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	var backend_response Backend_address_pool
 	backend_response.Name = types.String{Value: gw_response.Properties.BackendAddressPools[i].Name}
 	backend_response.Id = types.String{Value: gw_response.Properties.BackendAddressPools[i].ID}
-	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
-	backend_response.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].Fqdn}
+	backend_response.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].IPAddress}
 
 	//and
 	// Generate resource state struct
