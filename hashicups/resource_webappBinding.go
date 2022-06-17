@@ -162,8 +162,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	}
 	resp.Diagnostics.AddWarning(
 		"Unable to create Backend Address pool ######## API response = "+ress_gw+"\n",
-		"Backend Address pool Name doesn't exist in the response app gateway",
-	)
+		"Backend Address pool Name doesn't exist in the response app gateway")
 	// log the added backend address pool
 	i := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
 	tflog.Trace(ctx, "created BackendAddressPool", "BackendAddressPool ID", gw_response.Properties.BackendAddressPools[i].ID)
