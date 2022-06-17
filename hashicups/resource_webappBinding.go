@@ -135,11 +135,23 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
 	gw_response := updateGW(r.p.configureData.AZURE_SUBSCRIPTION_ID.Value,resourceGroupName,applicationGatewayName,gw,r.p.token.Access_token)	
 	
+
+	//tranform the gw json to readible pretty string
+	payloadBytes, err := json.Marshal(gw_response)
+	if err != nil {
+		// handle err
+	}
+	rs := string(payloadBytes)
+	ress, err := PrettyString(rs)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	//verify if the backend address pool is added to the gateway 
 	if !checkBackendAddressPoolElement(gw_response,backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
-			"Unable to create Backend Address pool ######## backend_json.Name = "+backend_json.Name,
+			"Unable to create Backend Address pool ######## API response = "+ress,
 			"Backend Address pool Name doesn't exist in the response app gateway",
 		)
 		return
@@ -337,7 +349,6 @@ func removeBackendAddressPoolElement(gw *azureagw.ApplicationGateway,backendAddr
 		}
 	}	
 	fmt.Println("#############################removed =",removed)
-	
 }
 func getBackendAddressPoolElementKey(gw azureagw.ApplicationGateway,backendAddressPoolName string )(int){
 	key := -1
@@ -347,4 +358,11 @@ func getBackendAddressPoolElementKey(gw azureagw.ApplicationGateway,backendAddre
 		}
 	}	
 	return key
+}
+func PrettyString(str string) (string, error) {
+    var prettyJSON bytes.Buffer
+    if err := json.Indent(&prettyJSON, []byte(str), "", "    "); err != nil {
+        return "", err
+    }
+    return prettyJSON.String(), nil
 }
