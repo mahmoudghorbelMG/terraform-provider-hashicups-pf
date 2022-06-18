@@ -399,7 +399,7 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 	resp.Diagnostics.AddWarning("----------------- API code: "+fmt.Sprint(code)+"\n", "ress_error")
 	checkBackendAddressPoolElement(gw_response, backend_name)
 	//verify if the backend address pool is added to the gateway
-	if code!= 200 {//checkBackendAddressPoolElement(gw_response, backend_name) {
+	if code != 200 { //checkBackendAddressPoolElement(gw_response, backend_name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
 			"Unable to delete Backend Address pool ######## API response code="+fmt.Sprint(code)+"\n"+ress_error, //+args+ress_gw+"\n"
@@ -462,12 +462,20 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("Call failure: %+v", err)
+	var resp *http.Response
+	code := 0
+	for {
+		resp, err = http.DefaultClient.Do(req)
+		if err != nil {
+			log.Fatalf("Call failure: %+v", err)
+		}
+		defer resp.Body.Close()
+		code = resp.StatusCode
+		if code != 429 { // the condition stops matching
+			break // break out of the loop
+		}
 	}
-	defer resp.Body.Close()
-	code := resp.StatusCode
+
 	responseData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
