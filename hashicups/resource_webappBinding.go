@@ -129,8 +129,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 
 	backend_json.Properties.BackendAddresses = make([]struct {
 		Fqdn      string "json:\"fqdn,omitempty\""
-		IPAddress string "json:\"ipAddress,omitempty\""
-	}, 2)
+		IPAddress string "json:\"ipAddress,omitempty\""}, 2)
 	backend_json.Properties.BackendAddresses[0].Fqdn = backend_plan.Fqdns[0].Value
 	backend_json.Properties.BackendAddresses[1].IPAddress = backend_plan.Ip_addresses[0].Value
 
@@ -138,49 +137,66 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
 	gw_response, responseData := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 
+	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	/*
 	args := "\nAZURE_SUBSCRIPTION_ID = " + r.p.AZURE_SUBSCRIPTION_ID +
 		"\nresourceGroupName = " + resourceGroupName +
 		"\napplicationGatewayName = " + applicationGatewayName +
 		"\nAccess_token = " + r.p.token.Access_token
 	//tranform the gw json to readible pretty string
-	ress_gw := PrettyStringGW(gw_response)
+	//ress_gw := PrettyStringGW(gw_response)
+	*/
 
 	//verify if the backend address pool is added to the gateway
 	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
-			"Unable to create Backend Address pool ######## API response = "+args+"\n"+ress_error, //+ress_gw+"\n"  
+			"Unable to create Backend Address pool ######## API response = \n"+ress_error, //+args+ress_gw+"\n"  
 			"Backend Address pool Name doesn't exist in the response app gateway",
 		)
 		return
 	}
+
+	// display the json response from API
+	/*
 	resp.Diagnostics.AddWarning(
 		"Unable to create Backend Address pool ######## API response = "+ress_gw+"\n",
 		"Backend Address pool Name doesn't exist in the response app gateway")
+	*/
+	
 	// log the added backend address pool
 	i := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
 	tflog.Trace(ctx, "created BackendAddressPool", "BackendAddressPool ID", gw_response.Properties.BackendAddressPools[i].ID)
-	var backend_response Backend_address_pool
-	/*
-	var fqdn []types.String
-	fqdn[0] = types.String{Value:gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
+	
+	// Map response body to resource schema attribute	
+	backend_response:= Backend_address_pool{
+		Name:         types.String{Value: gw_response.Properties.BackendAddressPools[i].Name},
+		Id:           types.String{Value: gw_response.Properties.BackendAddressPools[i].ID},
+		Fqdns:        []types.String{},
+		Ip_addresses: []types.String{},
+	}
+	backend_response.Fqdns = make([]types.String, 1)
+	backend_response.Ip_addresses = make([]types.String, 1)
+	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
+	backend_response.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+/*
+	var fqdn []string	
+	fqdn[0] = gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn
 	var ip_addresses []types.String
 	ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
 	// Map response body to resource schema attribute
 	var backend_response = Backend_address_pool{
 		Name:         types.String{Value: gw_response.Properties.BackendAddressPools[i].Name},
 		Id:           types.String{Value: gw_response.Properties.BackendAddressPools[i].ID},
-		Fqdns:        fqdn,
-		Ip_addresses: ip_addresses,
-	}
-
-	/*
+		Fqdns:        types.List{Elems:   [types.String{Value: "mahmoud"}]},
+		Ip_addresses: types.List{Elems: types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress},},
+	}	
 	backend_response.Name = types.String{Value: gw_response.Properties.BackendAddressPools[i].Name}
 	backend_response.Id = types.String{Value: gw_response.Properties.BackendAddressPools[i].ID}
 	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
