@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"terraform-provider-hashicups-pf/azureagw"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -474,6 +475,7 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 		if code != 429 { // the condition stops matching
 			break // break out of the loop
 		}
+		time.Sleep(10 * time.Second)
 	}
 
 	responseData, err := ioutil.ReadAll(resp.Body)
