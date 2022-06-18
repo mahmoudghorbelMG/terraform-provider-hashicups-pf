@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os/exec"
 	"terraform-provider-hashicups-pf/azureagw"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -112,7 +111,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	}
 
 	//create and map the new backend_json object from the backend_plan
-	backend_json := azureagw.BackendAddressPools{
+	backend_json := azureagw.BackendAddressPool{
 		Name: backend_plan.Name.Value,
 		Properties: struct {
 			ProvisioningState string "json:\"provisioningState,omitempty\""
@@ -144,15 +143,6 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		log.Fatal(err)
 	}
 
-	/*
-	args := "\nAZURE_SUBSCRIPTION_ID = " + r.p.AZURE_SUBSCRIPTION_ID +
-		"\nresourceGroupName = " + resourceGroupName +
-		"\napplicationGatewayName = " + applicationGatewayName +
-		"\nAccess_token = " + r.p.token.Access_token
-	//tranform the gw json to readible pretty string
-	//ress_gw := PrettyStringGW(gw_response)
-	*/
-
 	//verify if the backend address pool is added to the gateway
 	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
@@ -162,55 +152,30 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		)
 		return
 	}
-
-	// display the json response from API
-	/*
-	resp.Diagnostics.AddWarning(
-		"Unable to create Backend Address pool ######## API response = "+ress_gw+"\n",
-		"Backend Address pool Name doesn't exist in the response app gateway")
-	*/
-	
 	// log the added backend address pool
 	i := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
 	tflog.Trace(ctx, "created BackendAddressPool", "BackendAddressPool ID", gw_response.Properties.BackendAddressPools[i].ID)
 	
 	// Map response body to resource schema attribute	
-	backend_response:= Backend_address_pool{
+	backend_state:= Backend_address_pool{
 		Name:         types.String{Value: gw_response.Properties.BackendAddressPools[i].Name},
 		Id:           types.String{Value: gw_response.Properties.BackendAddressPools[i].ID},
 		Fqdns:        []types.String{},
 		Ip_addresses: []types.String{},
 	}
-	backend_response.Fqdns = make([]types.String, 1)
-	backend_response.Ip_addresses = make([]types.String, 1)
-	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
-	backend_response.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
-/*
-	var fqdn []string	
-	fqdn[0] = gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn
-	var ip_addresses []types.String
-	ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
-	// Map response body to resource schema attribute
-	var backend_response = Backend_address_pool{
-		Name:         types.String{Value: gw_response.Properties.BackendAddressPools[i].Name},
-		Id:           types.String{Value: gw_response.Properties.BackendAddressPools[i].ID},
-		Fqdns:        types.List{Elems:   [types.String{Value: "mahmoud"}]},
-		Ip_addresses: types.List{Elems: types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress},},
-	}	
-	backend_response.Name = types.String{Value: gw_response.Properties.BackendAddressPools[i].Name}
-	backend_response.Id = types.String{Value: gw_response.Properties.BackendAddressPools[i].ID}
-	backend_response.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
-	backend_response.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
-*/
-	//and
+	backend_state.Fqdns = make([]types.String, 1)
+	backend_state.Ip_addresses = make([]types.String, 1)
+	backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
+	backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+
 	// Generate resource state struct
 	var result = WebappBinding{
 		Name:                 plan.Name,
 		Agw_name:             types.String{Value: gw_response.Name},
 		Agw_rg:               plan.Agw_rg,
-		Backend_address_pool: backend_response,
+		Backend_address_pool: backend_state,
 	}
-
+	//store to the created objecy to the terraform state
 	diags = resp.State.Set(ctx, result)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -231,41 +196,45 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 	// Get order from API and then update what is in state from what the API returns
 	webappBindingName := state.Name.Value
 
-	// Get order current value
-	//command := ".\\script.ps1 -Backendpool " + state.Backend_address_pool.Name.Value
-	//out, err := exec.Command("powershell", "-NoProfile", command).CombinedOutput()
-	//comande := "powershell.exe ./script.ps1 -Backendpool " + state.Backend_address_pool.Name.Value
-	//out, err := exec.Command(comande).Output()
-
-	command := "script.ps1"
-	out, err := exec.Command("pwsh", "-File", command, "-Backendpool", state.Backend_address_pool.Name.Value).CombinedOutput()
-	//command := "dir"
-	//out, err := exec.Command(command).CombinedOutput()
-	fmt.Printf("\n****************************Read out %s\n", out)
-
-	// if there is an error with our execution handle it here
-	if err != nil {
+	//Get the agw
+	resourceGroupName := state.Agw_rg.Value
+	applicationGatewayName := state.Agw_name.Value
+	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
+	//test if the backend address pool doen't exist in the gateway, then it is an error
+	if !checkBackendAddressPoolElement(gw, state.Backend_address_pool.Name.Value) {
+		// Error  - the non existance of backend_plan address pool name must stop execution
 		resp.Diagnostics.AddError(
-			"Error reading webappBinding",
-			"Could not read webappBindingName "+webappBindingName+": "+err.Error(),
+			"Unable to read Backend Address pool",
+			"Backend Address pool Name doesn't exist in the app gateway",
 		)
 		return
 	}
-	var backend_ Backend_address_pool
-	err = json.Unmarshal(out, &backend_)
-	if err != nil {
-		log.Fatalf("json.Unmarshal failed with %s\n", err)
-		return
-	}
+	// Get the current backend address pool from the API
+	backend_json := gw.Properties.BackendAddressPools[getBackendAddressPoolElementKey(gw,state.Backend_address_pool.Name.Value)]
+	
 
-	webappBinding_name := state.Name
-	// Map response body to resource schema attribute
+	// Map response body to resource schema attribute	
+	backend_state:= Backend_address_pool{
+		Name:         types.String{Value: backend_json.Name},
+		Id:           types.String{Value: backend_json.ID},
+		Fqdns:        []types.String{},
+		Ip_addresses: []types.String{},
+	}
+	backend_state.Fqdns = make([]types.String, 1)
+	backend_state.Ip_addresses = make([]types.String, 1)
+	backend_state.Fqdns[0] = types.String{Value: backend_json.Properties.BackendAddresses[0].Fqdn}
+	backend_state.Ip_addresses[0] = types.String{Value: backend_json.Properties.BackendAddresses[1].IPAddress}
+
+	// Generate resource state struct
 	var result = WebappBinding{
-		Name:                 webappBinding_name,
-		Backend_address_pool: backend_,
+		Name:                 types.String{Value: webappBindingName},
+		Agw_name:             state.Agw_name,
+		Agw_rg:               state.Agw_rg,
+		Backend_address_pool: backend_state,
 	}
-
-	diags = resp.State.Set(ctx, result)
+	
+	state = result
+	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -307,23 +276,12 @@ func getGW(subscriptionId string, resourceGroupName string, applicationGatewayNa
 	if err != nil {
 		log.Fatal(err)
 	}
-	/*
-			responseString := string(responseData)
-		    fmt.Printf(responseString)
-
-
-			res, err := PrettyString(responseString)
-		    if err != nil {
-		        log.Fatal(err)
-		    }*/
-	//fmt.Println(res)
 	var agw azureagw.ApplicationGateway
 	err = json.Unmarshal(responseData, &agw)
 
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	return agw
 }
 func updateGW(subscriptionId string, resourceGroupName string, applicationGatewayName string, gw azureagw.ApplicationGateway, token string) (azureagw.ApplicationGateway, []byte) {

@@ -20,7 +20,7 @@ type Identity struct {
 		} `json:",omitempty"`
 	} `json:"userAssignedIdentities"`*/
 }
-type BackendAddressPools struct {
+type BackendAddressPool struct {
 	Name       string `json:"name"`
 	ID         string `json:"id,omitempty"`
 	Etag       string `json:"etag,omitempty"`
@@ -66,7 +66,7 @@ type ApplicationGateway struct {
 			MaxCapacity int `json:"maxCapacity"`
 			MinCapacity int `json:"minCapacity"`
 		} `json:"autoscaleConfiguration"`
-		BackendAddressPools []BackendAddressPools `json:"backendAddressPools"`/*[]struct {
+		BackendAddressPools []BackendAddressPool `json:"backendAddressPools"`/*[]struct {
 			Name       string `json:"name"`
 			ID         string `json:"id"`
 			Etag       string `json:"etag"`
