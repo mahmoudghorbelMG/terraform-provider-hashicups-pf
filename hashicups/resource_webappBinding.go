@@ -475,7 +475,7 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 		if code != 429 { // the condition stops matching
 			break // break out of the loop
 		}
-		time.Sleep(10 * time.Second)
+		time.Sleep(13 * time.Second)
 	}
 
 	responseData, err := ioutil.ReadAll(resp.Body)
