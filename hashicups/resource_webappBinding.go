@@ -193,7 +193,7 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		return
 	}
 
-	// Get order from API and then update what is in state from what the API returns
+	// Get gw from API and then update what is in state from what the API returns
 	webappBindingName := state.Name.Value
 
 	//Get the agw
@@ -358,8 +358,54 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 
 // Delete resource
 func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResourceRequest, resp *tfsdk.DeleteResourceResponse) {
-	resp.Diagnostics.AddWarning("################ This is destroy method: ", "uuu")
+	// Get current state
+	var state WebappBinding
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	// Get backend address pool name from state
+	backend_name := state.Backend_address_pool.Name.Value
+	//Get the agw
+	resourceGroupName := state.Agw_rg.Value
+	applicationGatewayName := state.Agw_name.Value
+	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
+	//test if the backend address pool doen't exist in the gateway, then it is an error
+	if !checkBackendAddressPoolElement(gw, backend_name) {
+		// Error  - the non existance of backend_plan address pool name must stop execution
+		resp.Diagnostics.AddError(
+			"Unable to delete Backend Address pool",
+			"Backend Address pool Name doesn't exist in the app gateway. ###Certainly, it was removed manually###",
+		)
+		return
+	}
+
+	//remove the backend from the gw
+	removeBackendAddressPoolElement(&gw,backend_name)
+
+	//and update the gateway
+	gw_response, responseData,code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 	
+	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
+	rs := string(responseData)
+	ress_error, err := PrettyString(rs)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//verify if the backend address pool is added to the gateway
+	if checkBackendAddressPoolElement(gw_response, backend_name) {
+		// Error  - backend address pool wasn't added to the app gateway
+		resp.Diagnostics.AddError(
+			"Unable to delete Backend Address pool ######## API response code="+fmt.Sprint(code)+"\n"+ress_error, //+args+ress_gw+"\n"  
+			"Backend Address pool Name still exist in the response app gateway",
+		)
+		return
+	}
+
+	// Remove resource from state
+	resp.State.RemoveResource(ctx)
 }
 
 // Import resource
