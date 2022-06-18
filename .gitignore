@@ -6,6 +6,7 @@ bin
 
 # Local .terraform directories
 **/.terraform/*
+**/temp/*
 
 # .tfstate files
 *.tfstate

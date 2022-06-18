@@ -1,0 +1,670 @@
+{
+    "name": "default-app-gateway-mahmoud",
+    "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud",
+    "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+    "type": "Microsoft.Network/applicationGateways",
+    "location": "francecentral",
+    "tags": {},
+    "identity": {
+        "type": "userAssigned",
+        "userAssignedIdentities": {
+            "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourcegroups/shared-keyvault/providers/Microsoft.ManagedIdentity/userAssignedIdentities/agw-msi": {
+                "clientId": "f793f122-7f80-4f4e-8820-405b0004ac0c",
+                "principalId": "397dde65-4ef6-4495-8b1e-28e0f05f3c8d"
+            }
+        }
+    },
+    "properties": {
+        "authenticationCertificates": null,
+        "autoscaleConfiguration": null,
+        "backendAddressPools": [
+            {
+                "name": "default-citeo-plus-be-pool",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendAddressPools/default-citeo-plus-be-pool",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "backendAddresses": [
+                        {
+                            "fqdn": "default-citeo-plus.azurewebsites.net"
+                        }
+                    ],
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-plus-rule-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+            },
+            {
+                "name": "default-citeo-gdtr-iframe-be-pool",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendAddressPools/default-citeo-gdtr-iframe-be-pool",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "backendAddresses": [
+                        {
+                            "fqdn": "default-citeo-gdtr-iframe.azurewebsites.net"
+                        }
+                    ],
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-gdtr-iframe-rule-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+            },
+            {
+                "name": "default-citeo-ddc-be-pool",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendAddressPools/default-citeo-ddc-be-pool",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "backendAddresses": [
+                        {
+                            "fqdn": "default-citeo-ddc.azurewebsites.net"
+                        }
+                    ],
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-ddc-rule-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+            }
+        ],
+        "backendHttpSettingsCollection": [
+            {
+                "name": "default-citeo-gdtr-iframe-settings-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-gdtr-iframe-settings-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "port": 443,
+                    "protocol": "Https",
+                    "cookieBasedAffinity": "Disabled",
+                    "pickHostNameFromBackendAddress": true,
+                    "affinityCookieName": "ApplicationGatewayAffinity",
+                    "authenticationCertificates": null,
+                    "connectionDraining": null,
+                    "path": "",
+                    "requestTimeout": 666,
+                    "probe": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/probes/default-citeo-gdtr-iframe-probe-443"
+                    },
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-gdtr-iframe-rule-443"
+                        }
+                    ],
+                    "trustedRootCertificates": null
+                },
+                "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+            },
+            {
+                "name": "default-citeo-ddc-settings-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-ddc-settings-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "port": 443,
+                    "protocol": "Https",
+                    "cookieBasedAffinity": "Disabled",
+                    "pickHostNameFromBackendAddress": true,
+                    "affinityCookieName": "ApplicationGatewayAffinity",
+                    "authenticationCertificates": null,
+                    "connectionDraining": null,
+                    "path": "",
+                    "requestTimeout": 667,
+                    "probe": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/probes/default-citeo-ddc-probe-443"
+                    },
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-ddc-rule-443"
+                        }
+                    ],
+                    "trustedRootCertificates": null
+                },
+                "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+            },
+            {
+                "name": "default-citeo-plus-settings-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-plus-settings-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "port": 443,
+                    "protocol": "Https",
+                    "cookieBasedAffinity": "Disabled",
+                    "pickHostNameFromBackendAddress": true,
+                    "affinityCookieName": "ApplicationGatewayAffinity",
+                    "authenticationCertificates": null,
+                    "connectionDraining": null,
+                    "path": "",
+                    "requestTimeout": 666,
+                    "probe": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/probes/default-citeo-plus-probe-443"
+                    },
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-plus-rule-443"
+                        }
+                    ],
+                    "trustedRootCertificates": null
+                },
+                "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+            }
+        ],
+        "backendSettingsCollection": [],
+        "customErrorConfigurations": [],
+        "frontendIPConfigurations": [
+            {
+                "name": "appGwPublicFrontendIp",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendIPConfigurations/appGwPublicFrontendIp",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "privateIPAllocationMethod": "Dynamic",
+                    "publicIPAddress": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/publicIPAddresses/default-app-gateway-public-ip-mahmoud"
+                    },
+                    "httpListeners": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-80"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-80"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-80"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-443"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-443"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-443"
+                        }
+                    ],
+                    "subnet": null
+                }
+            }
+        ],
+        "frontendPorts": [
+            {
+                "name": "port_443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "port": 443,
+                    "httpListeners": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-443"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-443"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/frontendPorts"
+            },
+            {
+                "name": "port_80",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_80",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "port": 80,
+                    "httpListeners": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-80"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-80"
+                        },
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-80"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/frontendPorts"
+            }
+        ],
+        "gatewayIPConfigurations": [
+            {
+                "name": "appGatewayIpConfig",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/gatewayIPConfigurations/appGatewayIpConfig",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "subnet": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-network/providers/Microsoft.Network/virtualNetworks/shared-vnet/subnets/app-gateway-subnet"
+                    }
+                },
+                "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+            }
+        ],
+        "globalConfiguration": null,
+        "httpListeners": [
+            {
+                "name": "default-citeo-gdtr-iframe-listener-80",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-80",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "firewallPolicy": null,
+                    "provisioningState": "Succeeded",
+                    "frontendIPConfiguration": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendIPConfigurations/appGwPublicFrontendIp"
+                    },
+                    "frontendPort": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_80"
+                    },
+                    "protocol": "Http",
+                    "hostName": "default-web.citeo.guidedutri.fr",
+                    "hostNames": [],
+                    "requireServerNameIndication": false,
+                    "sslCertificate": null,
+                    "sslProfile": null,
+                    "customErrorConfigurations": [],
+                    "requestRoutingRules": null
+                },
+                "type": "Microsoft.Network/applicationGateways/httpListeners"
+            },
+            {
+                "name": "default-citeo-ddc-listener-80",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-80",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "firewallPolicy": null,
+                    "provisioningState": "Succeeded",
+                    "frontendIPConfiguration": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendIPConfigurations/appGwPublicFrontendIp"
+                    },
+                    "frontendPort": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_80"
+                    },
+                    "protocol": "Http",
+                    "hostName": "default-ddc.citeoiac.com",
+                    "hostNames": [],
+                    "requireServerNameIndication": false,
+                    "sslCertificate": null,
+                    "sslProfile": null,
+                    "customErrorConfigurations": [],
+                    "requestRoutingRules": null
+                },
+                "type": "Microsoft.Network/applicationGateways/httpListeners"
+            },
+            {
+                "name": "default-citeo-plus-listener-80",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-80",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "firewallPolicy": null,
+                    "provisioningState": "Succeeded",
+                    "frontendIPConfiguration": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendIPConfigurations/appGwPublicFrontendIp"
+                    },
+                    "frontendPort": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_80"
+                    },
+                    "protocol": "Http",
+                    "hostName": "default-www.citeo-plus.com",
+                    "hostNames": [],
+                    "requireServerNameIndication": false,
+                    "sslCertificate": null,
+                    "sslProfile": null,
+                    "customErrorConfigurations": [],
+                    "requestRoutingRules": null
+                },
+                "type": "Microsoft.Network/applicationGateways/httpListeners"
+            },
+            {
+                "name": "default-citeo-ddc-listener-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "firewallPolicy": null,
+                    "provisioningState": "Succeeded",
+                    "frontendIPConfiguration": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendIPConfigurations/appGwPublicFrontendIp"
+                    },
+                    "frontendPort": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_443"
+                    },
+                    "protocol": "Https",
+                    "hostName": "default-ddc.citeoiac.com",
+                    "hostNames": [],
+                    "requireServerNameIndication": true,
+                    "sslCertificate": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/sslCertificates/default-citeo-ddc-cert"
+                    },
+                    "sslProfile": null,
+                    "customErrorConfigurations": [],
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-ddc-rule-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/httpListeners"
+            },
+            {
+                "name": "default-citeo-gdtr-iframe-listener-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "firewallPolicy": null,
+                    "provisioningState": "Succeeded",
+                    "frontendIPConfiguration": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendIPConfigurations/appGwPublicFrontendIp"
+                    },
+                    "frontendPort": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_443"
+                    },
+                    "protocol": "Https",
+                    "hostName": "default-web.citeo.guidedutri.fr",
+                    "hostNames": [],
+                    "requireServerNameIndication": true,
+                    "sslCertificate": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/sslCertificates/default-citeo-gdtr-iframe-cert"
+                    },
+                    "sslProfile": null,
+                    "customErrorConfigurations": [],
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-gdtr-iframe-rule-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/httpListeners"
+            },
+            {
+                "name": "default-citeo-plus-listener-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "firewallPolicy": null,
+                    "provisioningState": "Succeeded",
+                    "frontendIPConfiguration": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendIPConfigurations/appGwPublicFrontendIp"
+                    },
+                    "frontendPort": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/frontendPorts/port_443"
+                    },
+                    "protocol": "Https",
+                    "hostName": "default-www.citeo-plus.com",
+                    "hostNames": [],
+                    "requireServerNameIndication": true,
+                    "sslCertificate": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/sslCertificates/default-citeo-plus-cert"
+                    },
+                    "sslProfile": null,
+                    "customErrorConfigurations": [],
+                    "requestRoutingRules": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-plus-rule-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/httpListeners"
+            }
+        ],
+        "listeners": [],
+        "loadDistributionPolicies": [],
+        "privateLinkConfigurations": [],
+        "probes": [
+            {
+                "name": "default-citeo-plus-probe-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/probes/default-citeo-plus-probe-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "protocol": "Https",
+                    "host": "",
+                    "path": "/",
+                    "interval": 30,
+                    "timeout": 30,
+                    "unhealthyThreshold": 3,
+                    "pickHostNameFromBackendHttpSettings": true,
+                    "minServers": 0,
+                    "match": {
+                        "body": "",
+                        "statusCodes": [
+                            "200-399"
+                        ]
+                    },
+                    "backendHttpSettings": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-plus-settings-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/probes"
+            },
+            {
+                "name": "default-citeo-ddc-probe-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/probes/default-citeo-ddc-probe-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "protocol": "Https",
+                    "host": "",
+                    "path": "/",
+                    "interval": 30,
+                    "timeout": 30,
+                    "unhealthyThreshold": 3,
+                    "pickHostNameFromBackendHttpSettings": true,
+                    "minServers": 0,
+                    "match": {
+                        "body": "",
+                        "statusCodes": [
+                            "200-399"
+                        ]
+                    },
+                    "backendHttpSettings": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-ddc-settings-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/probes"
+            },
+            {
+                "name": "default-citeo-gdtr-iframe-probe-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/probes/default-citeo-gdtr-iframe-probe-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "protocol": "Https",
+                    "host": "",
+                    "path": "/",
+                    "interval": 30,
+                    "timeout": 30,
+                    "unhealthyThreshold": 3,
+                    "pickHostNameFromBackendHttpSettings": true,
+                    "minServers": 0,
+                    "match": {
+                        "body": "",
+                        "statusCodes": [
+                            "200-399"
+                        ]
+                    },
+                    "backendHttpSettings": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-gdtr-iframe-settings-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/probes"
+            }
+        ],
+        "redirectConfigurations": [
+            {
+                "name": "default-citeo-ddc-redirect-80",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/redirectConfigurations/default-citeo-ddc-redirect-80",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "redirectType": "Permanent",
+                    "targetListener": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-443"
+                    },
+                    "includePath": false,
+                    "includeQueryString": false,
+                    "requestRoutingRules": null
+                },
+                "type": "Microsoft.Network/applicationGateways/redirectConfigurations"
+            }
+        ],
+        "requestRoutingRules": [
+            {
+                "name": "default-citeo-ddc-rule-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-ddc-rule-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "ruleType": "Basic",
+                    "priority": 101,
+                    "httpListener": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-443"
+                    },
+                    "backendAddressPool": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendAddressPools/default-citeo-ddc-be-pool"
+                    },
+                    "backendHttpSettings": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-ddc-settings-443"
+                    }
+                },
+                "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+            },
+            {
+                "name": "default-citeo-gdtr-iframe-rule-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-gdtr-iframe-rule-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "ruleType": "Basic",
+                    "priority": 102,
+                    "httpListener": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-443"
+                    },
+                    "backendAddressPool": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendAddressPools/default-citeo-gdtr-iframe-be-pool"
+                    },
+                    "backendHttpSettings": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-gdtr-iframe-settings-443"
+                    }
+                },
+                "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+            },
+            {
+                "name": "default-citeo-plus-rule-443",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/requestRoutingRules/default-citeo-plus-rule-443",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "ruleType": "Basic",
+                    "priority": 104,
+                    "httpListener": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-443"
+                    },
+                    "backendAddressPool": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendAddressPools/default-citeo-plus-be-pool"
+                    },
+                    "backendHttpSettings": {
+                        "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/backendHttpSettingsCollection/default-citeo-plus-settings-443"
+                    }
+                },
+                "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+            }
+        ],
+        "rewriteRuleSets": [],
+        "routingRules": [],
+        "sku": {
+            "name": "WAF_v2",
+            "tier": "WAF_v2",
+            "capacity": 1
+        },
+        "sslCertificates": [
+            {
+                "name": "default-citeo-plus-cert",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/sslCertificates/default-citeo-plus-cert",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "keyVaultSecretId": "https://kv-mahmoud.vault.azure.net/secrets/default-citeo-plus-cert/44f792b6dc694c228c2e1f4943ff91cb",
+                    "httpListeners": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-plus-listener-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/sslCertificates"
+            },
+            {
+                "name": "default-citeo-gdtr-iframe-cert",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/sslCertificates/default-citeo-gdtr-iframe-cert",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "keyVaultSecretId": "https://kv-mahmoud.vault.azure.net/secrets/default-citeo-gdtr-iframe-cert/61bb7d5569f44be0905bd42f892545a3",
+                    "httpListeners": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-gdtr-iframe-listener-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/sslCertificates"
+            },
+            {
+                "name": "default-citeo-ddc-cert",
+                "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/sslCertificates/default-citeo-ddc-cert",
+                "etag": "W/\"17ced34e-1459-43ab-a286-d0c96ec12926\"",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "keyVaultSecretId": "https://kv-mahmoud.vault.azure.net/secrets/default-citeo-ddc-cert/6ae31f879c2b4e05af69d0ccd7d7aba6",
+                    "httpListeners": [
+                        {
+                            "id": "/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourceGroups/shared-app-gateway/providers/Microsoft.Network/applicationGateways/default-app-gateway-mahmoud/httpListeners/default-citeo-ddc-listener-443"
+                        }
+                    ]
+                },
+                "type": "Microsoft.Network/applicationGateways/sslCertificates"
+            }
+        ],
+        "sslPolicy": {
+            "policyName": "AppGwSslPolicy20150501",
+            "policyType": "Predefined"
+        },
+        "sslProfiles": [],
+        "trustedClientCertificates": [],
+        "trustedRootCertificates": [],
+        "urlPathMaps": [],
+        "webApplicationFirewallConfiguration": {
+            "enabled": true,
+            "firewallMode": "Detection",
+            "ruleSetType": "OWASP",
+            "ruleSetVersion": "3.0",
+            "disabledRuleGroups": [],
+            "exclusions": [],
+            "requestBodyCheck": true,
+            "maxRequestBodySizeInKb": 128,
+            "fileUploadLimitInMb": 100
+        },
+        "provisioningState": "Succeeded",
+        "resourceGuid": "02c364fe-018f-482e-b689-20d2af7a9965",
+        "operationalState": "Running",
+        "privateEndpointConnections": []
+    }
+}
