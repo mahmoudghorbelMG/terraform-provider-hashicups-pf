@@ -358,6 +358,8 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 
 // Delete resource
 func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResourceRequest, resp *tfsdk.DeleteResourceResponse) {
+	resp.Diagnostics.AddWarning("################ This is destroy method: ", "uuu")
+	
 }
 
 // Import resource
