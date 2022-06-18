@@ -396,8 +396,8 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp.Diagnostics.AddWarning("----------------- API code: "+fmt.Sprint(code)+"\n", ress_error)
-
+	resp.Diagnostics.AddWarning("----------------- API code: "+fmt.Sprint(code)+"\n", "ress_error")
+	checkBackendAddressPoolElement(gw_response, backend_name)
 	//verify if the backend address pool is added to the gateway
 	if code!= 200 {//checkBackendAddressPoolElement(gw_response, backend_name) {
 		// Error  - backend address pool wasn't added to the app gateway
