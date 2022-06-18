@@ -367,6 +367,8 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 	}
 	// Get backend address pool name from state
 	backend_name := state.Backend_address_pool.Name.Value
+	resp.Diagnostics.AddWarning("################ Delete Backend Address Pool Name: ", backend_name)
+	
 	//Get the agw
 	resourceGroupName := state.Agw_rg.Value
 	applicationGatewayName := state.Agw_name.Value
