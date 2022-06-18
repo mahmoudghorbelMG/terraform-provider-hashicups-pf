@@ -399,7 +399,7 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 	resp.Diagnostics.AddWarning("----------------- API code: "+fmt.Sprint(code)+"\n", ress_error)
 
 	//verify if the backend address pool is added to the gateway
-	if checkBackendAddressPoolElement(gw_response, backend_name) {
+	if code!= 200 {//checkBackendAddressPoolElement(gw_response, backend_name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
 			"Unable to delete Backend Address pool ######## API response code="+fmt.Sprint(code)+"\n"+ress_error, //+args+ress_gw+"\n"
