@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-log/tflog"	
 )
 
 type resourceWebappBindingType struct{}
@@ -134,7 +134,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 
 	// add the backend to the agw and update the agw
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
-	gw_response, responseData := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+	gw_response, responseData,code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
 	rs := string(responseData)
@@ -147,7 +147,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
-			"Unable to create Backend Address pool ######## API response = \n"+ress_error, //+args+ress_gw+"\n"  
+			"Unable to create Backend Address pool ######## API response = "+fmt.Sprint(code)+"\n"+ress_error, //+args+ress_gw+"\n"  
 			"Backend Address pool Name doesn't exist in the response app gateway",
 		)
 		return
@@ -306,7 +306,7 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	//add the new one 
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
 	//and update the gateway
-	gw_response, responseData := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+	gw_response, responseData,code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
 	rs := string(responseData)
@@ -319,7 +319,7 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
-			"Unable to create Backend Address pool ######## API response = \n"+ress_error, //+args+ress_gw+"\n"  
+			"Unable to create Backend Address pool ######## API response code="+fmt.Sprint(code)+"\n"+ress_error, //+args+ress_gw+"\n"  
 			"Backend Address pool Name doesn't exist in the response app gateway",
 		)
 		return
@@ -394,7 +394,7 @@ func getGW(subscriptionId string, resourceGroupName string, applicationGatewayNa
 	}
 	return agw
 }
-func updateGW(subscriptionId string, resourceGroupName string, applicationGatewayName string, gw azureagw.ApplicationGateway, token string) (azureagw.ApplicationGateway, []byte) {
+func updateGW(subscriptionId string, resourceGroupName string, applicationGatewayName string, gw azureagw.ApplicationGateway, token string) (azureagw.ApplicationGateway, []byte,int) {
 	requestURI := "https://management.azure.com/subscriptions/" + subscriptionId + "/resourceGroups/" +
 		resourceGroupName + "/providers/Microsoft.Network/applicationGateways/" + applicationGatewayName + "?api-version=2021-08-01"
 	payloadBytes, err := json.Marshal(gw)
@@ -415,7 +415,7 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 		log.Fatalf("Call failure: %+v", err)
 	}
 	defer resp.Body.Close()
-
+	code:= resp.StatusCode
 	responseData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
@@ -426,7 +426,7 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	if err != nil {
 		fmt.Println(err)
 	}
-	return agw, responseData
+	return agw, responseData, code
 }
 
 //Application gateway manipulation

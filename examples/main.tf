@@ -34,6 +34,46 @@ resource "hashicups_webappBinding" "citeo-plus-binding" {
     fqdns = ["fqdn.mahmoud"]
     ip_addresses=["10.2.3.3"]
   }
+}
+resource "hashicups_webappBinding" "citeo-plus-binding4" {
+  name = "mahmoud-backendAddressPool-resource-name4"
+  agw_name              = "default-app-gateway-mahmoud"
+  agw_rg                = "shared-app-gateway"
+  backend_address_pool = {
+    name = "mahmoud-backendAddressPool-name4"
+    fqdns = ["fqdn.mahmoud.net"]
+    ip_addresses=["100.0.0.100"]
+  }
+}
+resource "hashicups_webappBinding" "citeo-plus-binding3" {
+  name = "mahmoud-backendAddressPool-resource-name3"
+  agw_name              = "default-app-gateway-mahmoud"
+  agw_rg                = "shared-app-gateway"
+  backend_address_pool = {
+    name = "mahmoud-backendAddressPool-name3"
+    fqdns = ["fqdn.mahmoud.net"]
+    ip_addresses=["100.0.0.100"]
+  }
+}
+resource "hashicups_webappBinding" "citeo-plus-binding2" {
+  name = "mahmoud-backendAddressPool-resource-name2"
+  agw_name              = "default-app-gateway-mahmoud"
+  agw_rg                = "shared-app-gateway"
+  backend_address_pool = {
+    name = "mahmoud-backendAddressPool-name2"
+    fqdns = ["fqdn.mahmoud.net"]
+    ip_addresses=["100.0.0.100"]
+  }
+}
+resource "hashicups_webappBinding" "citeo-plus-binding1" {
+  name = "mahmoud-backendAddressPool-resource-name1"
+  agw_name              = "default-app-gateway-mahmoud"
+  agw_rg                = "shared-app-gateway"
+  backend_address_pool = {
+    name = "mahmoud-backendAddressPool-name1"
+    fqdns = ["fqdn.mahmoud.net"]
+    ip_addresses=["100.0.0.100"]
+  }
 
 }
 /*
