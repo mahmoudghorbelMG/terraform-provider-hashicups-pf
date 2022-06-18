@@ -470,14 +470,13 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 		if err != nil {
 			log.Fatalf("Call failure: %+v", err)
 		}
-		defer resp.Body.Close()
 		code = resp.StatusCode
 		if code != 429 { // the condition stops matching
 			break // break out of the loop
 		}
 		time.Sleep(13 * time.Second)
 	}
-
+	defer resp.Body.Close()
 	responseData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
