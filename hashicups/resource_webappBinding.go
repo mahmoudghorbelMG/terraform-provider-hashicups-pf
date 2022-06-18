@@ -466,17 +466,19 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	var resp *http.Response
 	code := 0
 	for {
-		resp, err = http.DefaultClient.Do(req)
+		resp1, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatalf("Call failure: %+v", err)
 		}
-		code = resp.StatusCode
+		defer resp1.Body.Close()
+		code = resp1.StatusCode
 		if code != 429 { // the condition stops matching
+			resp = resp1
 			break // break out of the loop
 		}
 		time.Sleep(13 * time.Second)
 	}
-	defer resp.Body.Close()
+	
 	responseData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
