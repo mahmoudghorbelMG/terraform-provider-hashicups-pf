@@ -100,7 +100,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	//Verify if the agw already contains the wanted element
 	var backend_plan Backend_address_pool
 	backend_plan = plan.Backend_address_pool
-	resp.Diagnostics.AddWarning("################ Backend Address Pool Name: ", backend_plan.Name.Value)
+	//resp.Diagnostics.AddWarning("################ Backend Address Pool Name: ", backend_plan.Name.Value)
 	if checkBackendAddressPoolElement(gw, backend_plan.Name.Value) {
 		// Error  - existing backend_plan address pool name must stop execution
 		resp.Diagnostics.AddError(
@@ -205,7 +205,7 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		// Error  - the non existance of backend_plan address pool name must stop execution
 		resp.Diagnostics.AddError(
 			"Unable to read Backend Address pool",
-			"Backend Address pool Name doesn't exist in the app gateway",
+			"Backend Address pool Name doesn't exist in the app gateway. ###Certainly, it was removed manually###",
 		)
 		return
 	}
@@ -244,6 +244,116 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 
 // Update resource
 func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResourceRequest, resp *tfsdk.UpdateResourceResponse) {
+	
+	// Get plan values
+	var plan WebappBinding
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Get current state
+	var state WebappBinding
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	//Get the agw in order to update it with new values from plan
+	resourceGroupName := plan.Agw_rg.Value
+	applicationGatewayName := plan.Agw_name.Value
+	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
+
+	//Verify if the agw already contains the wanted element
+	var backend_plan Backend_address_pool
+	backend_plan = plan.Backend_address_pool
+	//resp.Diagnostics.AddWarning("################ Backend Address Pool Name: ", backend_plan.Name.Value)
+	if !checkBackendAddressPoolElement(gw, backend_plan.Name.Value) {
+		// Error  - existing backend_plan address pool name must stop execution
+		resp.Diagnostics.AddError(
+			"Unable to update the Backend Address pool",
+			"Backend Address pool Name dosen't exist in the app gateway",
+		)
+		return
+	}
+	
+	//create and map the new backend_json object from the backend_plan
+	backend_json := azureagw.BackendAddressPool{
+		Name: backend_plan.Name.Value,
+		Properties: struct {
+			ProvisioningState string "json:\"provisioningState,omitempty\""
+			BackendAddresses  []struct {
+				Fqdn      string "json:\"fqdn,omitempty\""
+				IPAddress string "json:\"ipAddress,omitempty\""
+			} "json:\"backendAddresses\""
+			RequestRoutingRules []struct {
+				ID string "json:\"id\""
+			} "json:\"requestRoutingRules,omitempty\""
+		}{},
+		Type: "Microsoft.Network/applicationGateways/backendAddressPools",
+	}
+
+	backend_json.Properties.BackendAddresses = make([]struct {
+		Fqdn      string "json:\"fqdn,omitempty\""
+		IPAddress string "json:\"ipAddress,omitempty\""}, 2)
+	backend_json.Properties.BackendAddresses[0].Fqdn = backend_plan.Fqdns[0].Value
+	backend_json.Properties.BackendAddresses[1].IPAddress = backend_plan.Ip_addresses[0].Value
+
+	//remove the old backend from the gateway
+	removeBackendAddressPoolElement(&gw,backend_json.Name)
+	//add the new one 
+	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
+	//and update the gateway
+	gw_response, responseData := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+
+	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
+	rs := string(responseData)
+	ress_error, err := PrettyString(rs)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//verify if the backend address pool is added to the gateway
+	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
+		// Error  - backend address pool wasn't added to the app gateway
+		resp.Diagnostics.AddError(
+			"Unable to create Backend Address pool ######## API response = \n"+ress_error, //+args+ress_gw+"\n"  
+			"Backend Address pool Name doesn't exist in the response app gateway",
+		)
+		return
+	}
+
+	// log the added backend address pool
+	i := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
+	tflog.Trace(ctx, "Updated BackendAddressPool", "BackendAddressPool ID", gw_response.Properties.BackendAddressPools[i].ID)
+	
+	// Map response body to resource schema attribute	
+	backend_state:= Backend_address_pool{
+		Name:         types.String{Value: gw_response.Properties.BackendAddressPools[i].Name},
+		Id:           types.String{Value: gw_response.Properties.BackendAddressPools[i].ID},
+		Fqdns:        []types.String{},
+		Ip_addresses: []types.String{},
+	}
+	backend_state.Fqdns = make([]types.String, 1)
+	backend_state.Ip_addresses = make([]types.String, 1)
+	backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
+	backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+
+	// Generate resource state struct
+	var result = WebappBinding{
+		Name:                 state.Name,
+		Agw_name:             types.String{Value: gw_response.Name},
+		Agw_rg:               state.Agw_rg,
+		Backend_address_pool: backend_state,
+	}
+	//store to the created objecy to the terraform state
+	diags = resp.State.Set(ctx, result)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // Delete resource
