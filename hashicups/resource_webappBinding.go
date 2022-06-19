@@ -137,7 +137,14 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	// add the backend to the agw and update the agw
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
 	gw_response, responseData, code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-
+	if code == 429 {
+		time.Sleep(13 * time.Second)
+		gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+		if code == 429 {
+			time.Sleep(13 * time.Second)
+			gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+		}
+	}
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
@@ -311,12 +318,20 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	gw_response, responseData, code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
+
+	if code == 429 {
+		time.Sleep(13 * time.Second)
+		gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+		if code == 429 {
+			time.Sleep(13 * time.Second)
+			gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+		}
+	}
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	//verify if the backend address pool is added to the gateway
 	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
@@ -390,7 +405,14 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 
 	//and update the gateway
 	gw_response, responseData, code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-
+	if code == 429 {
+		time.Sleep(13 * time.Second)
+		gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+		if code == 429 {
+			time.Sleep(13 * time.Second)
+			gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
+		}
+	}
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
@@ -398,7 +420,7 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 		log.Fatal(err)
 	}
 	resp.Diagnostics.AddWarning("----------------- API code: "+fmt.Sprint(code)+"\n", "ress_error")
-	checkBackendAddressPoolElement(gw_response, backend_name)
+	//exit :=checkBackendAddressPoolElement(gw_response, backend_name)
 	//verify if the backend address pool is added to the gateway
 	if code != 200 { //checkBackendAddressPoolElement(gw_response, backend_name) {
 		// Error  - backend address pool wasn't added to the app gateway
@@ -462,8 +484,14 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Content-Type", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("Call failure: %+v", err)
+	}
+	defer resp.Body.Close()
+	code := resp.StatusCode
 
-	var resp *http.Response
+	/*var resp *http.Response
 	code := 0
 	for {
 		resp1, err := http.DefaultClient.Do(req)
@@ -477,8 +505,8 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 			break // break out of the loop
 		}
 		time.Sleep(13 * time.Second)
-	}
-	
+	}*/
+
 	responseData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
