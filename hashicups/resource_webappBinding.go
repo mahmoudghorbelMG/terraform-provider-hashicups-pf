@@ -9,8 +9,8 @@ import (
 	"log"
 	"net/http"
 	"terraform-provider-hashicups-pf/azureagw"
-	"time"
 
+	"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -75,6 +75,9 @@ func (r resourceWebappBindingType) NewResource(_ context.Context, p tfsdk.Provid
 	}, nil
 }
 
+/*
+func (r resourceWebappBindingType) RetryContext(ctx context.Context, timeout time.Duration, f RetryFunc) error{
+}*/
 // Create a new resource
 func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResourceRequest, resp *tfsdk.CreateResourceResponse) {
 	if !r.p.configured {
@@ -137,14 +140,6 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	// add the backend to the agw and update the agw
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
 	gw_response, responseData, code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-	if code == 429 {
-		time.Sleep(13 * time.Second)
-		gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-		if code == 429 {
-			time.Sleep(13 * time.Second)
-			gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-		}
-	}
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
@@ -318,15 +313,6 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	gw_response, responseData, code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
-
-	if code == 429 {
-		time.Sleep(13 * time.Second)
-		gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-		if code == 429 {
-			time.Sleep(13 * time.Second)
-			gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-		}
-	}
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
 	if err != nil {
@@ -404,15 +390,7 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 	removeBackendAddressPoolElement(&gw, backend_name)
 
 	//and update the gateway
-	gw_response, responseData, code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-	if code == 429 {
-		time.Sleep(13 * time.Second)
-		gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-		if code == 429 {
-			time.Sleep(13 * time.Second)
-			gw_response, responseData, code = updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
-		}
-	}
+	_, responseData, code := updateGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, gw, r.p.token.Access_token)
 	//if there is an error, responseData contains the error message in jason, else, gw_response is a correct gw Object
 	rs := string(responseData)
 	ress_error, err := PrettyString(rs)
@@ -477,6 +455,16 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 		log.Fatal(err)
 	}
 	body := bytes.NewReader(payloadBytes)
+
+	retryClient := retryablehttp.NewClient()
+	req1, err := retryablehttp.NewRequest("PUT", requestURI, body)
+	if err != nil {
+		panic(err)
+	}
+	_, err = retryClient.Do(req1)
+	if err != nil {
+		panic(err)
+	}
 
 	req, err := http.NewRequest("PUT", requestURI, body)
 	if err != nil {
