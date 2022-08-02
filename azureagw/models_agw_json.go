@@ -104,7 +104,7 @@ type ApplicationGateway struct {
 				HostName       string `json:"hostName,omitempty"` ////ajouté
 				Path           string `json:"path"`
 				RequestTimeout int    `json:"requestTimeout"`
-				Probe          struct {
+				Probe          *struct {
 					ID string `json:"id"`
 				} `json:"probe,omitempty"`
 				ProbeEnabled        bool `json:"probeEnabled,omitempty"` ////ajouté
@@ -339,7 +339,7 @@ type ApplicationGateway struct {
 				HTTPListener      struct {
 					ID string `json:"id"`
 				} `json:"httpListener"`
-				BackendAddressPool struct {
+				BackendAddressPool *struct {
 					ID string `json:"id"`
 				} `json:"backendAddressPool,omitempty"`
 				BackendHTTPSettings struct {
