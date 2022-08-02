@@ -14,13 +14,13 @@ type BackendAddressPool struct {
 	Name       string `json:"name,omitempty"`
 	ID         string `json:"id,omitempty"`
 	Etag       string `json:"etag,omitempty"`
-	Properties *struct {
+	Properties struct {
 		ProvisioningState string `json:"provisioningState,omitempty"`
-		BackendAddresses  *[]struct {
+		BackendAddresses  []struct {
 			Fqdn      string `json:"fqdn,omitempty"`
 			IPAddress string `json:"ipAddress,omitempty"`
 		} `json:"backendAddresses"`
-		RequestRoutingRules *[]struct {
+		RequestRoutingRules []struct {
 			ID string `json:"id,omitempty"`
 		} `json:"requestRoutingRules,omitempty"`
 	} `json:"properties"`
@@ -51,10 +51,10 @@ type ApplicationGateway struct {
 			MaxCapacity int `json:"maxCapacity"`
 			MinCapacity int `json:"minCapacity"`
 		} `json:"autoscaleConfiguration"`
-		BackendAddressPools []BackendAddressPool `json:"backendAddressPools"`/*[]struct {
+		BackendAddressPools []BackendAddressPool `json:"backendAddressPools,omitempty"`/*[]struct {
 			Name       string `json:"name"`
-			ID         string `json:"id"`
-			Etag       string `json:"etag"`
+			ID         string `json:"id,omitempty"`
+			Etag       string `json:"etag,omitempty"`
 			Properties struct {
 				ProvisioningState string `json:"provisioningState"`
 				BackendAddresses  []struct {

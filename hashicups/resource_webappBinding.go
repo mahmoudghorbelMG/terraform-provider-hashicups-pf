@@ -76,9 +76,7 @@ func (r resourceWebappBindingType) NewResource(_ context.Context, p tfsdk.Provid
 	}, nil
 }
 
-/*
-func (r resourceWebappBindingType) RetryContext(ctx context.Context, timeout time.Duration, f RetryFunc) error{
-}*/
+
 // Create a new resource
 func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResourceRequest, resp *tfsdk.CreateResourceResponse) {
 	if !r.p.configured {
@@ -101,13 +99,6 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	resourceGroupName := plan.Agw_rg.Value
 	applicationGatewayName := plan.Agw_name.Value
 	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
-	
-	/*
-	fichier, err := PrettyString(PrettyStringGW(gw))
-	if err != nil {
-		log.Fatal(err)
-	}
-	printToFile(fichier,"agw.json")*/
 
 	//Verify if the agw already contains the wanted element
 	var backend_plan Backend_address_pool
@@ -132,18 +123,26 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 				IPAddress string "json:\"ipAddress,omitempty\""
 			} "json:\"backendAddresses\""
 			RequestRoutingRules []struct {
-				ID string "json:\"id\""
+				ID string "json:\"id,omitempty\""
 			} "json:\"requestRoutingRules,omitempty\""
 		}{},
 		Type: "Microsoft.Network/applicationGateways/backendAddressPools",
 	}
-
+	length := len(backend_plan.Fqdns)+len(backend_plan.Ip_addresses)
 	backend_json.Properties.BackendAddresses = make([]struct {
 		Fqdn      string "json:\"fqdn,omitempty\""
 		IPAddress string "json:\"ipAddress,omitempty\""
-	}, 2)
+	}, length)
+
+	for i := 0; i < len(backend_plan.Fqdns); i++ {
+        backend_json.Properties.BackendAddresses[i].Fqdn = backend_plan.Fqdns[i].Value
+    }
+	for i := 0; i < len(backend_plan.Ip_addresses); i++ {
+        backend_json.Properties.BackendAddresses[i+len(backend_plan.Fqdns)].IPAddress = backend_plan.Ip_addresses[i].Value
+    }
+	/*
 	backend_json.Properties.BackendAddresses[0].Fqdn = backend_plan.Fqdns[0].Value
-	backend_json.Properties.BackendAddresses[1].IPAddress = backend_plan.Ip_addresses[0].Value
+	backend_json.Properties.BackendAddresses[1].IPAddress = backend_plan.Ip_addresses[0].Value*/
 
 	// add the backend to the agw and update the agw
 	gw.Properties.BackendAddressPools = append(gw.Properties.BackendAddressPools, backend_json)
@@ -194,6 +193,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		return
 	}
 }
+
 
 // Read resource information
 func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceRequest, resp *tfsdk.ReadResourceResponse) {
@@ -253,6 +253,7 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 
 }
 
+
 // Update resource
 func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResourceRequest, resp *tfsdk.UpdateResourceResponse) {
 
@@ -300,7 +301,7 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 				IPAddress string "json:\"ipAddress,omitempty\""
 			} "json:\"backendAddresses\""
 			RequestRoutingRules []struct {
-				ID string "json:\"id\""
+				ID string "json:\"id,omitempty\""
 			} "json:\"requestRoutingRules,omitempty\""
 		}{},
 		Type: "Microsoft.Network/applicationGateways/backendAddressPools",
@@ -367,6 +368,7 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	}
 }
 
+
 // Delete resource
 func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResourceRequest, resp *tfsdk.DeleteResourceResponse) {
 	// Get current state
@@ -421,11 +423,13 @@ func (r resourceWebappBinding) Delete(ctx context.Context, req tfsdk.DeleteResou
 	resp.State.RemoveResource(ctx)
 }
 
+
 // Import resource
 func (r resourceWebappBinding) ImportState(ctx context.Context, req tfsdk.ImportResourceStateRequest, resp *tfsdk.ImportResourceStateResponse) {
 	// Save the import identifier in the id attribute
 	//tfsdk.ResourceImportStatePassthroughID(ctx, tftypes.NewAttributePath().WithAttributeName("id"), req, resp)
 }
+
 
 //Client operations
 func getGW(subscriptionId string, resourceGroupName string, applicationGatewayName string, token string) azureagw.ApplicationGateway {
@@ -448,13 +452,6 @@ func getGW(subscriptionId string, resourceGroupName string, applicationGatewayNa
 		log.Fatal(err)
 	}
 
-	/* //print the agw json reponse into file
-	fichier, err := PrettyStringFromByte(responseData)
-	if err != nil {
-		log.Fatal(err)
-	}
-	printToFile(fichier,"responseData.json")*/
-
 	var agw azureagw.ApplicationGateway
 	err = json.Unmarshal(responseData, &agw)
 
@@ -472,17 +469,6 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	}
 	body := bytes.NewReader(payloadBytes)
 
-	/*
-	retryClient := retryablehttp.NewClient()
-	req1, err := retryablehttp.NewRequest("PUT", requestURI, body)
-	if err != nil {
-		panic(err)
-	}
-	_, err = retryClient.Do(req1)
-	if err != nil {
-		panic(err)
-	}*/
-
 	req, err := http.NewRequest("PUT", requestURI, body)
 	if err != nil {
 		// handle err
@@ -495,22 +481,6 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	}
 	defer resp.Body.Close()
 	code := resp.StatusCode
-
-	/*var resp *http.Response
-	code := 0
-	for {
-		resp1, err := http.DefaultClient.Do(req)
-		if err != nil {
-			log.Fatalf("Call failure: %+v", err)
-		}
-		defer resp1.Body.Close()
-		code = resp1.StatusCode
-		if code != 429 { // the condition stops matching
-			resp = resp1
-			break // break out of the loop
-		}
-		time.Sleep(13 * time.Second)
-	}*/
 
 	responseData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
