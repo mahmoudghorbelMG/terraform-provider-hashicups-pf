@@ -1,7 +1,6 @@
 package azureagw
 
 type Token struct {
-
 	// defining struct variables
 	Token_type     string `json:"token_type"`
 	Expires_in     string `json:"expires_in"`
@@ -10,31 +9,22 @@ type Token struct {
 	Not_before     string `json:"not_before"`
 	Resource       string `json:"resource"`
 	Access_token   string `json:"access_token"`
-}/*
-type Identity struct {
-	Type                   string `json:"type"`
-	UserAssignedIdentities interface{} `json:"userAssignedIdentities,omitempty"`/*struct {
-		Msi struct {
-			PrincipalID string `json:"principalId"`
-			ClientID    string `json:"clientId"`
-		} `json:",omitempty"`
-	} `json:"userAssignedIdentities"`*/
-//}
+}
 type BackendAddressPool struct {
-	Name       string `json:"name"`
+	Name       string `json:"name,omitempty"`
 	ID         string `json:"id,omitempty"`
 	Etag       string `json:"etag,omitempty"`
-	Properties struct {
+	Properties *struct {
 		ProvisioningState string `json:"provisioningState,omitempty"`
-		BackendAddresses  []struct {
+		BackendAddresses  *[]struct {
 			Fqdn      string `json:"fqdn,omitempty"`
 			IPAddress string `json:"ipAddress,omitempty"`
 		} `json:"backendAddresses"`
-		RequestRoutingRules []struct {
-			ID string `json:"id"`
+		RequestRoutingRules *[]struct {
+			ID string `json:"id,omitempty"`
 		} `json:"requestRoutingRules,omitempty"`
 	} `json:"properties"`
-	Type string `json:"type"`
+	Type string `json:"type,omitempty"`
 } 
 
 type ApplicationGateway struct {
