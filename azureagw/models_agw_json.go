@@ -45,7 +45,7 @@ type ApplicationGateway struct {
 	Location string `json:"location"`
 	Tags     struct {
 	} `json:"tags"`
-	Identity Identity `json:"identity"` /*struct {
+	/*Identity Identity `json:"identity"` /*struct {
 		Type                   string `json:"type"`
 		UserAssignedIdentities struct {
 			SubscriptionsB3Ae2F088Ccb4640949EB4C0D2Acfde6ResourcegroupsSharedKeyvaultProvidersMicrosoftManagedIdentityUserAssignedIdentitiesAgwMsi struct {
