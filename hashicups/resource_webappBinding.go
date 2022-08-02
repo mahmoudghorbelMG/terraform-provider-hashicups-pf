@@ -239,10 +239,21 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		Fqdns:        []types.String{},
 		Ip_addresses: []types.String{},
 	}
+
+	backend_state.Fqdns = make([]types.String, len(backend_state.Fqdns))
+	backend_state.Ip_addresses = make([]types.String, len(backend_state.Ip_addresses))
+
+	for j := 0; j < len(backend_state.Fqdns); j++ {
+        backend_state.Fqdns[j]= types.String{Value: backend_json.Properties.BackendAddresses[j].Fqdn}
+    }
+	for j := 0; j < len(backend_state.Ip_addresses); j++ {
+        backend_state.Ip_addresses[j] = types.String{Value: backend_json.Properties.BackendAddresses[j+len(backend_state.Fqdns)].IPAddress}
+    }
+/*
 	backend_state.Fqdns = make([]types.String, 1)
 	backend_state.Ip_addresses = make([]types.String, 1)
 	backend_state.Fqdns[0] = types.String{Value: backend_json.Properties.BackendAddresses[0].Fqdn}
-	backend_state.Ip_addresses[0] = types.String{Value: backend_json.Properties.BackendAddresses[1].IPAddress}
+	backend_state.Ip_addresses[0] = types.String{Value: backend_json.Properties.BackendAddresses[1].IPAddress}*/
 
 	// Generate resource state struct
 	var result = WebappBinding{
@@ -315,12 +326,25 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 		Type: "Microsoft.Network/applicationGateways/backendAddressPools",
 	}
 
+	length := len(backend_plan.Fqdns)+len(backend_plan.Ip_addresses)
+	backend_json.Properties.BackendAddresses = make([]struct {
+		Fqdn      string "json:\"fqdn,omitempty\""
+		IPAddress string "json:\"ipAddress,omitempty\""
+	}, length)
+
+	for i := 0; i < len(backend_plan.Fqdns); i++ {
+        backend_json.Properties.BackendAddresses[i].Fqdn = backend_plan.Fqdns[i].Value
+    }
+	for i := 0; i < len(backend_plan.Ip_addresses); i++ {
+        backend_json.Properties.BackendAddresses[i+len(backend_plan.Fqdns)].IPAddress = backend_plan.Ip_addresses[i].Value
+    }
+/*
 	backend_json.Properties.BackendAddresses = make([]struct {
 		Fqdn      string "json:\"fqdn,omitempty\""
 		IPAddress string "json:\"ipAddress,omitempty\""
 	}, 2)
 	backend_json.Properties.BackendAddresses[0].Fqdn = backend_plan.Fqdns[0].Value
-	backend_json.Properties.BackendAddresses[1].IPAddress = backend_plan.Ip_addresses[0].Value
+	backend_json.Properties.BackendAddresses[1].IPAddress = backend_plan.Ip_addresses[0].Value*/
 
 	//remove the old backend from the gateway
 	removeBackendAddressPoolElement(&gw, backend_json.Name)
@@ -356,10 +380,21 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 		Fqdns:        []types.String{},
 		Ip_addresses: []types.String{},
 	}
+	backend_state.Fqdns = make([]types.String, len(backend_state.Fqdns))
+	backend_state.Ip_addresses = make([]types.String, len(backend_state.Ip_addresses))
+
+	for j := 0; j < len(backend_state.Fqdns); j++ {
+        backend_state.Fqdns[j]= types.String{Value: backend_json.Properties.BackendAddresses[j].Fqdn}
+    }
+	for j := 0; j < len(backend_state.Ip_addresses); j++ {
+        backend_state.Ip_addresses[j] = types.String{Value: backend_json.Properties.BackendAddresses[j+len(backend_state.Fqdns)].IPAddress}
+    }
+	/*
 	backend_state.Fqdns = make([]types.String, 1)
 	backend_state.Ip_addresses = make([]types.String, 1)
 	backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
 	backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+	*/
 
 	// Generate resource state struct
 	var result = WebappBinding{
