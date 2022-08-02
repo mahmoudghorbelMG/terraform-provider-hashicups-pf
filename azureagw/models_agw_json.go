@@ -47,13 +47,7 @@ type ApplicationGateway struct {
 	} `json:"tags"`
 	Identity *struct { //Identity `json:"identity,omitempty"`
 		Type                   string `json:"type"`
-		UserAssignedIdentities interface{} `json:"userAssignedIdentities,omitempty"`/*
-		UserAssignedIdentities struct {
-			SubscriptionsB3Ae2F088Ccb4640949EB4C0D2Acfde6ResourcegroupsSharedKeyvaultProvidersMicrosoftManagedIdentityUserAssignedIdentitiesAgwMsi struct {
-				PrincipalID string `json:"principalId"`
-				ClientID    string `json:"clientId"`
-			} `json:"/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourcegroups/shared-keyvault/providers/Microsoft.ManagedIdentity/userAssignedIdentities/agw-msi"`
-		} `json:"userAssignedIdentities"`*/
+		UserAssignedIdentities interface{} `json:"userAssignedIdentities,omitempty"`
 	} `json:"identity,omitempty"`
 	Properties struct {
 		AuthenticationCertificates []struct {

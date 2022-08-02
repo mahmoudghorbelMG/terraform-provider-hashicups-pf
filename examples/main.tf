@@ -28,7 +28,7 @@ resource "hashicups_webappBinding" "citeo-plus-binding" {
     fqdns = ["fqdn.mahmoud"]
     ip_addresses=["10.2.3.3"]
   }
-}
+}/*
 resource "hashicups_webappBinding" "citeo-plus-binding4" {
   name = "mahmoud-backendAddressPool-resource-name4"
   agw_name              = data.azurerm_application_gateway.appgw.name
@@ -69,7 +69,7 @@ resource "hashicups_webappBinding" "citeo-plus-binding1" {
     ip_addresses=["100.0.0.100"]
   }
 
-}
+}*/
 /*
 output "citeo-plus-binding_out" {
   value = hashicups_webappBinding.citeo-plus-binding

@@ -13,10 +13,8 @@ import (
 	"os"
 	"terraform-provider-hashicups-pf/azureagw"
 	"strings"
-
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"terraform-provider-hashicups-pf/hashicups"
-	
+	"terraform-provider-hashicups-pf/hashicups"	
 )
 
 

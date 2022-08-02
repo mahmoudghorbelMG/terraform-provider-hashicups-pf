@@ -102,12 +102,12 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	applicationGatewayName := plan.Agw_name.Value
 	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
 	
-	
+	/*
 	fichier, err := PrettyString(PrettyStringGW(gw))
 	if err != nil {
 		log.Fatal(err)
 	}
-	printToFile(fichier,"agw.json")
+	printToFile(fichier,"agw.json")*/
 
 	//Verify if the agw already contains the wanted element
 	var backend_plan Backend_address_pool
@@ -448,11 +448,12 @@ func getGW(subscriptionId string, resourceGroupName string, applicationGatewayNa
 		log.Fatal(err)
 	}
 
+	/* //print the agw json reponse into file
 	fichier, err := PrettyStringFromByte(responseData)
 	if err != nil {
 		log.Fatal(err)
 	}
-	printToFile(fichier,"responseData.json")
+	printToFile(fichier,"responseData.json")*/
 
 	var agw azureagw.ApplicationGateway
 	err = json.Unmarshal(responseData, &agw)
@@ -554,6 +555,8 @@ func getBackendAddressPoolElementKey(gw azureagw.ApplicationGateway, backendAddr
 	}
 	return key
 }
+
+//some debugging tools
 func PrettyStringGW(gw azureagw.ApplicationGateway) string {
 	payloadBytes, err := json.Marshal(gw)
 	if err != nil {
