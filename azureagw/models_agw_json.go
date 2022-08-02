@@ -46,9 +46,9 @@ type ApplicationGateway struct {
 	Tags     struct {
 	} `json:"tags"`
 	Identity *struct { //Identity `json:"identity,omitempty"`
-		Type                   string `json:"type"`
+		Type                   string `json:"type,omitempty"`
 		UserAssignedIdentities interface{} `json:"userAssignedIdentities,omitempty"`
-	} `json:"identity,omitempty"`
+	} `json:"identity"`
 	Properties struct {
 		AuthenticationCertificates []struct {
 			Id         string `json:"id"`
