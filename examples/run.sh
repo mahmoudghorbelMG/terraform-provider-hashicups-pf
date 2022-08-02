@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd ..
+cd ~/terraform-learn/terraform-provider-hashicups-pf
 git pull
 go install
 cd exemples
