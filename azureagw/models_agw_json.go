@@ -10,16 +10,16 @@ type Token struct {
 	Not_before     string `json:"not_before"`
 	Resource       string `json:"resource"`
 	Access_token   string `json:"access_token"`
-}/*
+}
 type Identity struct {
-	Type                   string `json:"type"`
-	UserAssignedIdentities interface{} `json:"userAssignedIdentities"`/*struct {
+	Type                   string `json:"type,omitempty"`
+	UserAssignedIdentities interface{} `json:"userAssignedIdentities,omitempty"`/*struct {
 		Msi struct {
 			PrincipalID string `json:"principalId"`
 			ClientID    string `json:"clientId"`
 		} `json:",omitempty"`
 	} `json:"userAssignedIdentities"`*/
-//}
+}
 type BackendAddressPool struct {
 	Name       string `json:"name"`
 	ID         string `json:"id,omitempty"`
@@ -45,7 +45,7 @@ type ApplicationGateway struct {
 	Location string `json:"location"`
 	Tags     struct {
 	} `json:"tags"`
-	Identity struct { //Identity `json:"identity,omitempty"` 
+	Identity Identity `json:"identity,omitempty"` /*struct {
 		Type                   string `json:"type"`
 		UserAssignedIdentities struct {
 			SubscriptionsB3Ae2F088Ccb4640949EB4C0D2Acfde6ResourcegroupsSharedKeyvaultProvidersMicrosoftManagedIdentityUserAssignedIdentitiesAgwMsi struct {
@@ -53,7 +53,7 @@ type ApplicationGateway struct {
 				ClientID    string `json:"clientId"`
 			} `json:"/subscriptions/b3ae2f08-8ccb-4640-949e-b4c0d2acfde6/resourcegroups/shared-keyvault/providers/Microsoft.ManagedIdentity/userAssignedIdentities/agw-msi"`
 		} `json:"userAssignedIdentities"`
-	} `json:"identity,omitempty"`
+	} `json:"identity"`*/
 	Properties struct {
 		AuthenticationCertificates []struct {
 			Id         string `json:"id"`
