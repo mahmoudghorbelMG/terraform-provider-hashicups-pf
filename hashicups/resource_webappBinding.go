@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"terraform-provider-hashicups-pf/azureagw"
 
-	"github.com/hashicorp/go-retryablehttp"
+	//"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -456,6 +456,7 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	}
 	body := bytes.NewReader(payloadBytes)
 
+	/*
 	retryClient := retryablehttp.NewClient()
 	req1, err := retryablehttp.NewRequest("PUT", requestURI, body)
 	if err != nil {
@@ -464,7 +465,7 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	_, err = retryClient.Do(req1)
 	if err != nil {
 		panic(err)
-	}
+	}*/
 
 	req, err := http.NewRequest("PUT", requestURI, body)
 	if err != nil {
