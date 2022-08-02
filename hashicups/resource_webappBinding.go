@@ -108,7 +108,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		log.Fatal(err)
 	}
 	printToFile(fichier,"agw.json")
-	
+
 	//Verify if the agw already contains the wanted element
 	var backend_plan Backend_address_pool
 	backend_plan = plan.Backend_address_pool
@@ -447,6 +447,13 @@ func getGW(subscriptionId string, resourceGroupName string, applicationGatewayNa
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fichier, err := PrettyStringFromByte(responseData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	printToFile(fichier,"responseData.json")
+
 	var agw azureagw.ApplicationGateway
 	err = json.Unmarshal(responseData, &agw)
 
@@ -558,6 +565,13 @@ func PrettyStringGW(gw azureagw.ApplicationGateway) string {
 		return "error"
 	}
 	return prettyJSON.String()
+}
+func PrettyStringFromByte(str []byte) (string, error) {
+	var prettyJSON bytes.Buffer
+	if err := json.Indent(&prettyJSON, str, "", "    "); err != nil {
+		return "", err
+	}
+	return prettyJSON.String(), nil
 }
 func PrettyString(str string) (string, error) {
 	var prettyJSON bytes.Buffer
