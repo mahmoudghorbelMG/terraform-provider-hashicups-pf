@@ -515,7 +515,7 @@ type ApplicationGateway struct {
 				} `json:"pathRules"`
 			} `json:"properties"`
 		} `json:"urlPathMaps"`
-		WebApplicationFirewallConfiguration struct {
+		WebApplicationFirewallConfiguration *struct {
 			Enabled            bool   `json:"enabled"`
 			MaxRequestBodySize int    `json:"maxRequestBodySize,omitempty"`
 			FirewallMode       string `json:"firewallMode,omitempty"`
@@ -533,7 +533,7 @@ type ApplicationGateway struct {
 			RequestBodyCheck       bool `json:"requestBodyCheck"`
 			MaxRequestBodySizeInKb int  `json:"maxRequestBodySizeInKb"`
 			FileUploadLimitInMb    int  `json:"fileUploadLimitInMb"`
-		} `json:"webApplicationFirewallConfiguration"`
+		} `json:"webApplicationFirewallConfiguration,omitempty"`
 		Zones                      []string      `json:"zones,omitempty"`
 		ProvisioningState          string        `json:"provisioningState"`
 		ResourceGUID               string        `json:"resourceGuid"`
