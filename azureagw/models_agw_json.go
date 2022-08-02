@@ -100,7 +100,7 @@ type ApplicationGateway struct {
 				RequestTimeout int    `json:"requestTimeout"`
 				Probe          *struct {
 					ID string `json:"id"`
-				} `json:"probe,omitempty"`
+				} `json:"probe"`
 				ProbeEnabled        bool `json:"probeEnabled,omitempty"` ////ajouté
 				RequestRoutingRules *[]struct {
 					ID string `json:"id"`
@@ -136,7 +136,7 @@ type ApplicationGateway struct {
 		EnableHTTP2    bool `json:"enableHttp2,omitempty"`
 		FirewallPolicy *struct {
 			ID string `json:"id"`
-		} `json:"firewallPolicy,omitempty"`
+		} `json:"firewallPolicy"`
 		ForceFirewallPolicyAssociation bool `json:"forceFirewallPolicyAssociation,omitempty"`
 		FrontendIPConfigurations       []struct {
 			Name       string `json:"name"`
@@ -318,7 +318,7 @@ type ApplicationGateway struct {
 				} `json:"requestRoutingRules"`
 				URLPathMaps *[]struct {
 					ID string `json:"id"`
-				} `json:"urlPathMaps,omitempty"`
+				} `json:"urlPathMaps"`
 			} `json:"properties"`
 			Type string `json:"type"`
 		} `json:"redirectConfigurations"`
@@ -335,22 +335,22 @@ type ApplicationGateway struct {
 				} `json:"httpListener"`
 				BackendAddressPool *struct {
 					ID string `json:"id"`
-				} `json:"backendAddressPool,omitempty"`
+				} `json:"backendAddressPool"`
 				BackendHTTPSettings *struct {
 					ID string `json:"id"`
-				} `json:"backendHttpSettings,omitempty"`
+				} `json:"backendHttpSettings"`
 				LoadDistributionPolicy *struct {
 					ID string `json:"id"`
-				} `json:"loadDistributionPolicy,omitempty"`
+				} `json:"loadDistributionPolicy"`
 				RedirectConfiguration *struct {
 					ID string `json:"id"`
-				} `json:"redirectConfiguration,omitempty"`
+				} `json:"redirectConfiguration"`
 				RewriteRuleSet *struct {
 					ID string `json:"id"`
-				} `json:"rewriteRuleSet,omitempty"`
+				} `json:"rewriteRuleSet"`
 				URLPathMap *struct {
 					ID string `json:"id"`
-				} `json:"urlPathMap,omitempty"`
+				} `json:"urlPathMap"`
 			} `json:"properties"`
 			Type string `json:"type"`
 		} `json:"requestRoutingRules"`
@@ -527,7 +527,7 @@ type ApplicationGateway struct {
 			RequestBodyCheck       bool `json:"requestBodyCheck"`
 			MaxRequestBodySizeInKb int  `json:"maxRequestBodySizeInKb"`
 			FileUploadLimitInMb    int  `json:"fileUploadLimitInMb"`
-		} `json:"webApplicationFirewallConfiguration,omitempty"`
+		} `json:"webApplicationFirewallConfiguration"`
 		Zones                      []string      `json:"zones,omitempty"`
 		ProvisioningState          string        `json:"provisioningState"`
 		ResourceGUID               string        `json:"resourceGuid"`
