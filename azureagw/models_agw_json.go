@@ -342,7 +342,7 @@ type ApplicationGateway struct {
 				BackendAddressPool *struct {
 					ID string `json:"id"`
 				} `json:"backendAddressPool,omitempty"`
-				BackendHTTPSettings struct {
+				BackendHTTPSettings *struct {
 					ID string `json:"id"`
 				} `json:"backendHttpSettings,omitempty"`
 				LoadDistributionPolicy *struct {
