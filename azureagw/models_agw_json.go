@@ -45,7 +45,7 @@ type ApplicationGateway struct {
 	Location string `json:"location"`
 	Tags     struct {
 	} `json:"tags"`
-	Identity struct { //Identity `json:"identity,omitempty"`
+	Identity *struct { //Identity `json:"identity,omitempty"`
 		Type                   string `json:"type"`
 		UserAssignedIdentities interface{} `json:"userAssignedIdentities,omitempty"`/*
 		UserAssignedIdentities struct {
