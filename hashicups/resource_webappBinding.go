@@ -9,7 +9,8 @@ import (
 	"log"
 	"net/http"
 	"terraform-provider-hashicups-pf/azureagw"
-
+	"os"
+	"io"
 	//"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -100,7 +101,14 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	resourceGroupName := plan.Agw_rg.Value
 	applicationGatewayName := plan.Agw_name.Value
 	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
-
+	
+	
+	fichier, err := PrettyString(PrettyStringGW(gw))
+	if err != nil {
+		log.Fatal(err)
+	}
+	printToFile(fichier,"agw.json")
+	
 	//Verify if the agw already contains the wanted element
 	var backend_plan Backend_address_pool
 	backend_plan = plan.Backend_address_pool
@@ -557,4 +565,12 @@ func PrettyString(str string) (string, error) {
 		return "", err
 	}
 	return prettyJSON.String(), nil
+}
+func printToFile(str string, fileName string){
+	file, err := os.Create(fileName)
+    if err != nil {
+        log.Fatal(err)
+    }
+    mw := io.MultiWriter(os.Stdout, file)
+    fmt.Fprintln(mw, str)
 }
