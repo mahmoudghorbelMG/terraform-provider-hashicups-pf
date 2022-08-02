@@ -519,7 +519,7 @@ type ApplicationGateway struct {
 			Enabled            bool   `json:"enabled"`
 			MaxRequestBodySize int    `json:"maxRequestBodySize,omitempty"`
 			FirewallMode       string `json:"firewallMode,omitempty"`
-			RuleSetType        string `json:"ruleSetType"`
+			RuleSetType        string `json:"ruleSetType,omitempty"`
 			RuleSetVersion     string `json:"ruleSetVersion"`
 			DisabledRuleGroups []struct {
 				RuleGroupName string   `json:"ruleGroupName"`
