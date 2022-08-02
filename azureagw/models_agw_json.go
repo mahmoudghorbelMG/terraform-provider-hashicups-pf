@@ -12,7 +12,7 @@ type Token struct {
 	Access_token   string `json:"access_token"`
 }
 type Identity struct {
-	Type                   string `json:"type,omitempty"`
+	Type                   string `json:"type"`
 	UserAssignedIdentities interface{} `json:"userAssignedIdentities,omitempty"`/*struct {
 		Msi struct {
 			PrincipalID string `json:"principalId"`
