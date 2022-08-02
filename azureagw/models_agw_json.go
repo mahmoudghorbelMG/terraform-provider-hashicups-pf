@@ -105,7 +105,7 @@ type ApplicationGateway struct {
 				RequestTimeout int    `json:"requestTimeout"`
 				Probe          struct {
 					ID string `json:"id"`
-				} `json:"probe"`
+				} `json:"probe,omitempty"`
 				ProbeEnabled        bool `json:"probeEnabled,omitempty"` ////ajouté
 				RequestRoutingRules *[]struct {
 					ID string `json:"id"`
@@ -340,10 +340,10 @@ type ApplicationGateway struct {
 				} `json:"httpListener"`
 				BackendAddressPool struct {
 					ID string `json:"id"`
-				} `json:"backendAddressPool"`
+				} `json:"backendAddressPool,omitempty"`
 				BackendHTTPSettings struct {
 					ID string `json:"id"`
-				} `json:"backendHttpSettings"`
+				} `json:"backendHttpSettings,omitempty"`
 				LoadDistributionPolicy *struct {
 					ID string `json:"id"`
 				} `json:"loadDistributionPolicy,omitempty"`
@@ -517,7 +517,7 @@ type ApplicationGateway struct {
 		WebApplicationFirewallConfiguration struct {
 			Enabled            bool   `json:"enabled"`
 			MaxRequestBodySize int    `json:"maxRequestBodySize,omitempty"`
-			FirewallMode       string `json:"firewallMode"`
+			FirewallMode       string `json:"firewallMode,omitempty"`
 			RuleSetType        string `json:"ruleSetType"`
 			RuleSetVersion     string `json:"ruleSetVersion"`
 			DisabledRuleGroups []struct {
