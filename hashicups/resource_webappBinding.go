@@ -174,10 +174,18 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		Fqdns:        []types.String{},
 		Ip_addresses: []types.String{},
 	}
-	backend_state.Fqdns = make([]types.String, 1)
-	backend_state.Ip_addresses = make([]types.String, 1)
-	backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
-	backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+	backend_state.Fqdns = make([]types.String, len(backend_plan.Fqdns))
+	backend_state.Ip_addresses = make([]types.String, len(backend_plan.Ip_addresses))
+
+	for j := 0; j < len(backend_plan.Fqdns); j++ {
+        backend_state.Fqdns[j]= types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j].Fqdn}
+    }
+	for j := 0; j < len(backend_plan.Ip_addresses); j++ {
+        backend_state.Ip_addresses[j] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j].IPAddress}
+    }
+
+	//backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
+	//backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
 
 	// Generate resource state struct
 	var result = WebappBinding{
