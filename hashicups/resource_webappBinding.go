@@ -250,9 +250,11 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		}
 	}
 	length_Ip := length_Backends - length_Fqdns
-
 	backend_state.Fqdns = make([]types.String, length_Fqdns)
-	backend_state.Ip_addresses = make([]types.String, length_Ip)
+	if length_Ip != 0 {
+		backend_state.Ip_addresses = make([]types.String, length_Ip)
+	}
+	
 
 	for j := 0; j < length_Fqdns; j++ {
         backend_state.Fqdns[j]= types.String{Value: backend_json.Properties.BackendAddresses[j].Fqdn}
@@ -403,8 +405,10 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	length_Ip := length_Backends - length_Fqdns
 
 	backend_state.Fqdns = make([]types.String, length_Fqdns)
-	backend_state.Ip_addresses = make([]types.String, length_Ip)
-
+	if length_Ip != 0 {
+		backend_state.Ip_addresses = make([]types.String, length_Ip)
+	}
+	
 	for j := 0; j < length_Fqdns; j++ {
         backend_state.Fqdns[j]= types.String{Value: backend_json2.Properties.BackendAddresses[j].Fqdn}
     }
