@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"os"
 	"terraform-provider-hashicups-pf/azureagw"
-
+	"strings"
 	//"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -180,7 +180,7 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 	length_BackendAddresses := len(backend_json.Properties.BackendAddresses)
 	length_Fqdns :=0	
 	for i := 0; i < length_BackendAddresses; i++ {
-		if (backend_json.Properties.BackendAddresses[i].Fqdn != "") {
+		if (backend_json.Properties.BackendAddresses[i].Fqdn != "")&&(&backend_json.Properties.BackendAddresses[i].Fqdn != nil) {
 			length_Fqdns++ 
 		}
 	}
