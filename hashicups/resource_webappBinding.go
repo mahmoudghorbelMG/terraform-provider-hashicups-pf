@@ -158,14 +158,15 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		// Error  - the non existance of backend_plan address pool name must stop execution
 		resp.Diagnostics.AddError(
 			"Unable to read Backend Address pool",
-			"Backend Address pool Name doesn't exist in the app gateway. ###Certainly, it was removed manually###",
+			"Backend Address pool Name doesn't exist in the app gateway. ### Certainly, it was removed manually ###",
 		)
 		return
 	}
 
 	//backend_state2 :=generateBackendAddressPoolState(gw, state.Backend_address_pool)
 	// Get the current backend address pool from the API
-	backend_json := gw.Properties.BackendAddressPools[getBackendAddressPoolElementKey(gw, state.Backend_address_pool.Name.Value)]
+	index:=getBackendAddressPoolElementKey(gw, state.Backend_address_pool.Name.Value)
+	backend_json := gw.Properties.BackendAddressPools[index]
 
 	// Map response body to resource schema attribute
 	backend_state := Backend_address_pool{
@@ -177,6 +178,8 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 
 	length_BackendAddresses := len(backend_json.Properties.BackendAddresses)
 	fmt.Println("tttttttttttttttttt  length_BackendAddresses = ",length_BackendAddresses)
+	fmt.Println("oooooooooooooooo  the length of state.Backend_address_pool.Fqdns  = ",len(state.Backend_address_pool.Fqdns))
+	fmt.Println("oooooooooooooooo  the length of state.Backend_address_pool.Ip_addresses  = ",len(state.Backend_address_pool.Ip_addresses))
 	length_Fqdns :=0	
 	for i := 0; i < length_BackendAddresses; i++ {
 		if (backend_json.Properties.BackendAddresses[i].Fqdn != "")&&(&backend_json.Properties.BackendAddresses[i].Fqdn != nil) {			
@@ -578,9 +581,9 @@ func checkCreatedBackendAddressPool(gw_response azureagw.ApplicationGateway, bac
 		return
 	}
 }
-func generateBackendAddressPoolState(gw_response azureagw.ApplicationGateway, backend_plan Backend_address_pool) Backend_address_pool {
-	index := getBackendAddressPoolElementKey(gw_response, backend_plan.Name.Value)
-	backend_json:=gw_response.Properties.BackendAddressPools[index]
+func generateBackendAddressPoolState(gw azureagw.ApplicationGateway, backend_plan Backend_address_pool) Backend_address_pool {
+	index := getBackendAddressPoolElementKey(gw, backend_plan.Name.Value)
+	backend_json:=gw.Properties.BackendAddressPools[index]
 	// log the added backend address pool
 	//tflog.Trace(ctx, "created BackendAddressPool", "BackendAddressPool ID", backend_json.ID)
 
