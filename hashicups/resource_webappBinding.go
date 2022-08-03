@@ -260,6 +260,8 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 	backend_state.Fqdns = make([]types.String, length_Fqdns)
 	if length_Ip != 0 {
 		backend_state.Ip_addresses = make([]types.String, length_Ip)
+	}else{
+		backend_state.Ip_addresses = nil
 	}
 	
 
@@ -414,6 +416,8 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	backend_state.Fqdns = make([]types.String, length_Fqdns)
 	if length_Ip != 0 {
 		backend_state.Ip_addresses = make([]types.String, length_Ip)
+	}else{
+		backend_state.Ip_addresses = nil
 	}
 	
 	for j := 0; j < length_Fqdns; j++ {
@@ -423,13 +427,7 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
         backend_state.Ip_addresses[j] = types.String{Value: backend_json2.Properties.BackendAddresses[j+length_Fqdns].IPAddress}
     }
 	
-	/*
-	backend_state.Fqdns = make([]types.String, 1)
-	backend_state.Ip_addresses = make([]types.String, 1)
-	backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[index].Properties.BackendAddresses[0].Fqdn}
-	backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[index].Properties.BackendAddresses[1].IPAddress}
-	*/
-
+	
 	// Generate resource state struct
 	var result = WebappBinding{
 		Name:                 state.Name,
