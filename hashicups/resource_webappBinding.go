@@ -11,8 +11,6 @@ import (
 	"net/http"
 	"os"
 	"terraform-provider-hashicups-pf/azureagw"
-	"strings"
-	//"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
