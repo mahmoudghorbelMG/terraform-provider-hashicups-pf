@@ -600,10 +600,10 @@ func generateBackendState(gw_response azureagw.ApplicationGateway, backend_plan 
 	}
 
 	for j := 0; j < len(backend_plan.Fqdns); j++ {
-        backend_state.Fqdns[j]= types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j].Fqdn}
+        backend_state.Fqdns[j]= types.String{Value: gw_response.Properties.BackendAddressPools[index].Properties.BackendAddresses[j].Fqdn}
     }
 	for j := 0; j < len(backend_plan.Ip_addresses); j++ {
-		backend_state.Ip_addresses[j] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j+len(backend_plan.Fqdns)].IPAddress}
+		backend_state.Ip_addresses[j] = types.String{Value: gw_response.Properties.BackendAddressPools[index].Properties.BackendAddresses[j+len(backend_plan.Fqdns)].IPAddress}
     }
 
 	return backend_state
