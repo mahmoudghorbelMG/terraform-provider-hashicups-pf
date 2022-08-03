@@ -19,6 +19,9 @@ import (
 
 
 func main() {
+	/*for i := 0; i < 3; i++ {
+		fmt.Print("##################################")
+	}*/
 	tfsdk.Serve(context.Background(), hashicups.New, tfsdk.ServeOpts{
 		Name: "hashicups",
 	})
