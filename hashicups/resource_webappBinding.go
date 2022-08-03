@@ -240,14 +240,23 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		Ip_addresses: []types.String{},
 	}
 
-	backend_state.Fqdns = make([]types.String, len(backend_state.Fqdns))
-	backend_state.Ip_addresses = make([]types.String, len(backend_state.Ip_addresses))
+	length_Backends := len(backend_json.Properties.BackendAddresses)
+	length_Fqdns :=0	
+	for i := 0; i < length_Backends; i++ {
+		if !(backend_json.Properties.BackendAddresses[i].Fqdn == "") {
+			length_Fqdns++ 
+		}
+	}
+	length_Ip := length_Backends - length_Fqdns
 
-	for j := 0; j < len(backend_state.Fqdns); j++ {
+	backend_state.Fqdns = make([]types.String, length_Fqdns)
+	backend_state.Ip_addresses = make([]types.String, length_Ip)
+
+	for j := 0; j < length_Fqdns; j++ {
         backend_state.Fqdns[j]= types.String{Value: backend_json.Properties.BackendAddresses[j].Fqdn}
     }
-	for j := 0; j < len(backend_state.Ip_addresses); j++ {
-        backend_state.Ip_addresses[j] = types.String{Value: backend_json.Properties.BackendAddresses[j+len(backend_state.Fqdns)].IPAddress}
+	for j := 0; j < length_Ip; j++ {
+        backend_state.Ip_addresses[j] = types.String{Value: backend_json.Properties.BackendAddresses[j+length_Fqdns].IPAddress}
     }
 /*
 	backend_state.Fqdns = make([]types.String, 1)
@@ -359,7 +368,7 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	if err != nil {
 		log.Fatal(err)
 	}
-	//verify if the backend address pool is added to the gateway
+	//verify if the new backend address pool is added to the gateway
 	if !checkBackendAddressPoolElement(gw_response, backend_json.Name) {
 		// Error  - backend address pool wasn't added to the app gateway
 		resp.Diagnostics.AddError(
@@ -370,30 +379,42 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	}
 
 	// log the added backend address pool
-	i := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
-	tflog.Trace(ctx, "Updated BackendAddressPool", "BackendAddressPool ID", gw_response.Properties.BackendAddressPools[i].ID)
+	index := getBackendAddressPoolElementKey(gw_response, backend_json.Name)
+	backend_json2 := gw_response.Properties.BackendAddressPools[index]
+	tflog.Trace(ctx, "Updated BackendAddressPool", "BackendAddressPool ID", backend_json2.ID)
 
 	// Map response body to resource schema attribute
 	backend_state := Backend_address_pool{
-		Name:         types.String{Value: gw_response.Properties.BackendAddressPools[i].Name},
-		Id:           types.String{Value: gw_response.Properties.BackendAddressPools[i].ID},
+		Name:         types.String{Value: backend_json2.Name},
+		Id:           types.String{Value: backend_json2.ID},
 		Fqdns:        []types.String{},
 		Ip_addresses: []types.String{},
 	}
-	backend_state.Fqdns = make([]types.String, len(backend_state.Fqdns))
-	backend_state.Ip_addresses = make([]types.String, len(backend_state.Ip_addresses))
 
-	for j := 0; j < len(backend_state.Fqdns); j++ {
-        backend_state.Fqdns[j]= types.String{Value: backend_json.Properties.BackendAddresses[j].Fqdn}
+	length_Backends := len(backend_json2.Properties.BackendAddresses)
+	length_Fqdns :=0	
+	for i := 0; i < length_Backends; i++ {
+		if !(backend_json2.Properties.BackendAddresses[i].Fqdn == "") {
+			length_Fqdns++ 
+		}
+	}
+	length_Ip := length_Backends - length_Fqdns
+
+	backend_state.Fqdns = make([]types.String, length_Fqdns)
+	backend_state.Ip_addresses = make([]types.String, length_Ip)
+
+	for j := 0; j < length_Fqdns; j++ {
+        backend_state.Fqdns[j]= types.String{Value: backend_json2.Properties.BackendAddresses[j].Fqdn}
     }
-	for j := 0; j < len(backend_state.Ip_addresses); j++ {
-        backend_state.Ip_addresses[j] = types.String{Value: backend_json.Properties.BackendAddresses[j+len(backend_state.Fqdns)].IPAddress}
+	for j := 0; j < length_Ip; j++ {
+        backend_state.Ip_addresses[j] = types.String{Value: backend_json2.Properties.BackendAddresses[j+length_Fqdns].IPAddress}
     }
+	
 	/*
 	backend_state.Fqdns = make([]types.String, 1)
 	backend_state.Ip_addresses = make([]types.String, 1)
-	backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
-	backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
+	backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[index].Properties.BackendAddresses[0].Fqdn}
+	backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[index].Properties.BackendAddresses[1].IPAddress}
 	*/
 
 	// Generate resource state struct
