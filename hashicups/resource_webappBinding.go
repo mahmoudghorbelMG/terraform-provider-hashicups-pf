@@ -55,7 +55,7 @@ func (r resourceWebappBindingType) GetSchema(_ context.Context) (tfsdk.Schema, d
 						Type: types.ListType{
 							ElemType: types.StringType,
 						},
-						Required: true,
+						Optional: true,
 					},
 					"ip_addresses": {
 						Type: types.ListType{
@@ -130,11 +130,16 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	}
 	length := len(backend_plan.Fqdns)+len(backend_plan.Ip_addresses)
 	fmt.Println("+++++++++++++++++ The number of fqdns+ip (length) is:", length)
-	backend_json.Properties.BackendAddresses = make([]struct {
-		Fqdn      string "json:\"fqdn,omitempty\""
-		IPAddress string "json:\"ipAddress,omitempty\""
-	}, length)
-
+	
+	if length == 0 {
+		backend_json.Properties.BackendAddresses = nil
+	}else{
+		backend_json.Properties.BackendAddresses = make([]struct {
+			Fqdn      string "json:\"fqdn,omitempty\""
+			IPAddress string "json:\"ipAddress,omitempty\""
+		}, length)	
+	}
+	
 	for i := 0; i < len(backend_plan.Fqdns); i++ {
         backend_json.Properties.BackendAddresses[i].Fqdn = backend_plan.Fqdns[i].Value
     }
@@ -176,7 +181,12 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		Ip_addresses: []types.String{},
 	}
 	fmt.Println("------------------ The number len(backend_plan.Fqdns) is:", len(backend_plan.Fqdns))
-	backend_state.Fqdns = make([]types.String, len(backend_plan.Fqdns))
+	
+	if len(backend_plan.Fqdns) != 0 {
+		backend_state.Fqdns = make([]types.String, len(backend_plan.Fqdns))
+	}else{
+		backend_state.Fqdns = nil
+	}
 	fmt.Println("------------------ The number len(backend_plan.Ip_addresses) is:", len(backend_plan.Ip_addresses))
 	
 	if len(backend_plan.Ip_addresses) != 0 {
@@ -189,12 +199,8 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
         backend_state.Fqdns[j]= types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j].Fqdn}
     }
 	for j := 0; j < len(backend_plan.Ip_addresses); j++ {
-		resp.Diagnostics.AddWarning("*********************** enter the loop for (backend_plan.Ip_addresses) is: ", "yes")
-        backend_state.Ip_addresses[j] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j+len(backend_plan.Fqdns)].IPAddress}
+		backend_state.Ip_addresses[j] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j+len(backend_plan.Fqdns)].IPAddress}
     }
-
-	//backend_state.Fqdns[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[0].Fqdn}
-	//backend_state.Ip_addresses[0] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[1].IPAddress}
 
 	// Generate resource state struct
 	var result = WebappBinding{
@@ -257,7 +263,12 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		}
 	}
 	length_Ip := length_Backends - length_Fqdns
-	backend_state.Fqdns = make([]types.String, length_Fqdns)
+	if length_Fqdns != 0 {
+		backend_state.Fqdns = make([]types.String, length_Fqdns)
+	}else{
+		backend_state.Fqdns = nil
+	}
+	
 	if length_Ip != 0 {
 		backend_state.Ip_addresses = make([]types.String, length_Ip)
 	}else{
@@ -349,10 +360,15 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	}
 
 	length := len(backend_plan.Fqdns)+len(backend_plan.Ip_addresses)
-	backend_json.Properties.BackendAddresses = make([]struct {
-		Fqdn      string "json:\"fqdn,omitempty\""
-		IPAddress string "json:\"ipAddress,omitempty\""
-	}, length)
+	if length != 0 {
+		backend_json.Properties.BackendAddresses = make([]struct {
+			Fqdn      string "json:\"fqdn,omitempty\""
+			IPAddress string "json:\"ipAddress,omitempty\""
+		}, length)
+	}else{
+		backend_json.Properties.BackendAddresses = nil
+	}
+	
 
 	for i := 0; i < len(backend_plan.Fqdns); i++ {
         backend_json.Properties.BackendAddresses[i].Fqdn = backend_plan.Fqdns[i].Value
@@ -413,7 +429,12 @@ func (r resourceWebappBinding) Update(ctx context.Context, req tfsdk.UpdateResou
 	}
 	length_Ip := length_Backends - length_Fqdns
 
-	backend_state.Fqdns = make([]types.String, length_Fqdns)
+	if length_Fqdns != 0 {
+		backend_state.Fqdns = make([]types.String, length_Fqdns)
+	}else{
+		backend_state.Fqdns = nil
+	}
+
 	if length_Ip != 0 {
 		backend_state.Ip_addresses = make([]types.String, length_Ip)
 	}else{
