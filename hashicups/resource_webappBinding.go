@@ -182,9 +182,10 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 		if (backend_json.Properties.BackendAddresses[i].Fqdn != "")&&(&backend_json.Properties.BackendAddresses[i].Fqdn != nil) {			
 			length_Fqdns++ 
 		}else{
-			fmt.Println("tttttttttttttttttt   backend_json.Properties.BackendAddresses[i].Fqdn = ''  ou nil:")
+			fmt.Println("+++++++++++++++++   backend_json.Properties.BackendAddresses[i].Fqdn = ''  ou nil:")
 		}
 	}
+	fmt.Println("tttttttttttttttttt  length_fqdns = ",length_Fqdns)
 	length_Ip := length_BackendAddresses - length_Fqdns
 
 	if length_Fqdns != 0 {
