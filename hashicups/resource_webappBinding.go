@@ -174,9 +174,9 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		Fqdns:        []types.String{},
 		Ip_addresses: []types.String{},
 	}
-	resp.Diagnostics.AddWarning("------------------ The number len(backend_plan.Fqdns) is: ", string(len(backend_plan.Fqdns)))
+	resp.Diagnostics.AddWarning("------------------ The number len(backend_plan.Fqdns) is: ", fmt.Sprint(len(backend_plan.Fqdns)))
 	backend_state.Fqdns = make([]types.String, len(backend_plan.Fqdns))
-	resp.Diagnostics.AddWarning("------------------ The number len(backend_plan.Ip_addresses) is: ", string(len(backend_plan.Ip_addresses)))
+	resp.Diagnostics.AddWarning("------------------ The number len(backend_plan.Ip_addresses) is: ", fmt.Sprint(len(backend_plan.Ip_addresses)))
 	
 	if len(backend_plan.Ip_addresses) != 0 {
 		backend_state.Ip_addresses = make([]types.String, len(backend_plan.Ip_addresses))
