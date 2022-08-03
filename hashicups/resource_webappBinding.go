@@ -181,7 +181,9 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 	
 	if len(backend_plan.Ip_addresses) != 0 {
 		backend_state.Ip_addresses = make([]types.String, len(backend_plan.Ip_addresses))
-	}	
+	}else{
+		backend_state.Ip_addresses = nil
+	}
 
 	for j := 0; j < len(backend_plan.Fqdns); j++ {
         backend_state.Fqdns[j]= types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j].Fqdn}
