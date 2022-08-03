@@ -95,25 +95,17 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		return
 	}
 
-	//Get the agw
+	//Get the agw (app gateway) from Azure with its Rest API
 	resourceGroupName := plan.Agw_rg.Value
 	applicationGatewayName := plan.Agw_name.Value
 	gw := getGW(r.p.AZURE_SUBSCRIPTION_ID, resourceGroupName, applicationGatewayName, r.p.token.Access_token)
 
-	//Verify if the agw already contains the wanted element
-	var backend_plan Backend_address_pool
-	backend_plan = plan.Backend_address_pool
-	//resp.Diagnostics.AddWarning("################ Backend Address Pool Name: ", backend_plan.Name.Value)
-	if checkBackendAddressPoolElement(gw, backend_plan.Name.Value) {
-		// Error  - existing backend_plan address pool name must stop execution
-		resp.Diagnostics.AddError(
-			"Unable to create Backend Address pool",
-			"Backend Address pool Name already exists in the app gateway",
-		)
-		return
-	}
-
+	//Check if the agw already contains an element that has the same name
+	checkElementName(gw,plan,resp)
+	
 	//create and map the new backend_json object from the backend_plan
+	backend_plan := plan.Backend_address_pool
+	
 	backend_json := azureagw.BackendAddressPool{
 		Name: backend_plan.Name.Value,
 		Properties: struct {
@@ -590,6 +582,22 @@ func updateGW(subscriptionId string, resourceGroupName string, applicationGatewa
 	}
 	return agw, responseData, code
 }
+func checkElementName(gw azureagw.ApplicationGateway, plan WebappBinding,resp *tfsdk.CreateResourceResponse){
+	
+	//Create new var for all configurations
+	backend_plan := plan.Backend_address_pool	
+
+	if checkBackendAddressPoolElement(gw, backend_plan.Name.Value) {
+		// Error  - existing backend_plan address pool name must stop execution
+		resp.Diagnostics.AddError(
+			"Unable to create Backend Address pool",
+			"Backend Address pool Name already exists in the app gateway",
+		)
+		return
+	}
+
+}
+
 
 //Application gateway manipulation
 func checkBackendAddressPoolElement(gw azureagw.ApplicationGateway, backendAddressPoolName string) bool {
