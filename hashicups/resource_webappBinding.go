@@ -174,7 +174,10 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
 		Fqdns:        []types.String{},
 		Ip_addresses: []types.String{},
 	}
+	resp.Diagnostics.AddWarning("------------------ The number len(backend_plan.Fqdns) is: ", string(len(backend_plan.Fqdns)))
 	backend_state.Fqdns = make([]types.String, len(backend_plan.Fqdns))
+	resp.Diagnostics.AddWarning("------------------ The number len(backend_plan.Ip_addresses) is: ", string(len(backend_plan.Ip_addresses)))
+	
 	if len(backend_plan.Ip_addresses) != 0 {
 		backend_state.Ip_addresses = make([]types.String, len(backend_plan.Ip_addresses))
 	}	
@@ -183,6 +186,7 @@ func (r resourceWebappBinding) Create(ctx context.Context, req tfsdk.CreateResou
         backend_state.Fqdns[j]= types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j].Fqdn}
     }
 	for j := 0; j < len(backend_plan.Ip_addresses); j++ {
+		resp.Diagnostics.AddWarning("*********************** enter the loop for (backend_plan.Ip_addresses) is: ", "yes")
         backend_state.Ip_addresses[j] = types.String{Value: gw_response.Properties.BackendAddressPools[i].Properties.BackendAddresses[j+len(backend_plan.Fqdns)].IPAddress}
     }
 
