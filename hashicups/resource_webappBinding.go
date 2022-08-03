@@ -178,8 +178,10 @@ func (r resourceWebappBinding) Read(ctx context.Context, req tfsdk.ReadResourceR
 	length_BackendAddresses := len(backend_json.Properties.BackendAddresses)
 	length_Fqdns :=0	
 	for i := 0; i < length_BackendAddresses; i++ {
-		if (backend_json.Properties.BackendAddresses[i].Fqdn != "")&&(&backend_json.Properties.BackendAddresses[i].Fqdn != nil) {
+		if (backend_json.Properties.BackendAddresses[i].Fqdn != "")&&(&backend_json.Properties.BackendAddresses[i].Fqdn != nil) {			
 			length_Fqdns++ 
+		}else{
+			fmt.Println("tttttttttttttttttt   backend_json.Properties.BackendAddresses[i].Fqdn = ''  ou nil:")
 		}
 	}
 	length_Ip := length_BackendAddresses - length_Fqdns
