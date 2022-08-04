@@ -40,7 +40,7 @@ func (r resourceWebappBindingType) GetSchema(_ context.Context) (tfsdk.Schema, d
 				Required: true,
 			},
 			"backend_address_pool": {
-				Required: true,
+				Optional: true,
 				Attributes: tfsdk.SingleNestedAttributes(map[string]tfsdk.Attribute{
 					"name": {
 						Type:     types.StringType,
